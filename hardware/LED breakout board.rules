@@ -1,0 +1,95 @@
+
+(rules PCB LED breakout board
+  (snap_angle 
+    fortyfive_degree
+  )
+  (autoroute_settings
+    (fanout off)
+    (autoroute on)
+    (postroute on)
+    (vias on)
+    (via_costs 50)
+    (plane_via_costs 5)
+    (start_ripup_costs 100)
+    (start_pass_no 165)
+    (layer_rule F.Cu
+      (active on)
+      (preferred_direction horizontal)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 2.2)
+    )
+    (layer_rule B.Cu
+      (active on)
+      (preferred_direction vertical)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 1.9)
+    )
+  )
+  (rule
+    (width 250.0)
+    (clear 200.2)
+    (clear 125.0 (type smd_to_turn_gap))
+    (clear 50.0 (type smd_smd))
+  )
+  (padstack "Via[0-1]_600:400_um"
+    (shape
+      (circle F.Cu 600.0 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 600.0 0.0 0.0)
+    )
+    (attach off)
+  )
+  (via 
+    "Via[0-1]_600:400_um" "Via[0-1]_600:400_um" default
+  )
+  (via 
+    "Via[0-1]_600:400_um-kicad_default" "Via[0-1]_600:400_um" "kicad_default"
+  )
+  (via_rule
+    default "Via[0-1]_600:400_um"
+  )
+  (via_rule
+    "kicad_default" "Via[0-1]_600:400_um-kicad_default"
+  )
+  (class default
+    (clearance_class default)
+    (via_rule default)
+    (rule
+      (width 250.0)
+    )
+    (circuit 
+      (use_layer F.Cu B.Cu)
+    )
+  )
+  (class "kicad_default"
+    GND VCC /ROW0 "Net-(Q1-Pad1)" /ROW1 "Net-(Q2-Pad1)" /ROW2 "Net-(Q3-Pad1)"
+    /ROW3 "Net-(Q4-Pad1)" /ROW4 "Net-(Q5-Pad1)" /ROW5 "Net-(Q6-Pad1)" /ROW6 "Net-(Q7-Pad1)"
+    /ROW7 "Net-(Q8-Pad1)" "Net-(R1-Pad1)" "Net-(R2-Pad1)" "Net-(R3-Pad1)" "Net-(R4-Pad1)" "Net-(R5-Pad1)" "Net-(R6-Pad1)"
+    "Net-(R7-Pad1)" "Net-(R8-Pad1)" "Net-(SH1-PadA0)" "Net-(SH1-PadA1)" "Net-(SH1-PadA2)" "/LED shift registers/BLANK" "/LED shift registers/LAT" "/LED shift registers/SIN"
+    "/LED shift registers/SCLK" "/LED shift registers/A0" "/LED shift registers/A1" "/LED shift registers/A2" "/LED shift registers/A3" "/LED shift registers/A4" "/LED shift registers/A5" "/LED shift registers/A6"
+    "/LED shift registers/A7" "/LED shift registers/B0" "/LED shift registers/B1" "/LED shift registers/B2" "/LED shift registers/B3" "/LED shift registers/B4" "/LED shift registers/B5" "/LED shift registers/B6"
+    "/LED shift registers/B7" /sheet56F58BA4/SIN /sheet56F5A6B9/SIN /sheet56F5A6B9/A0 /sheet56F5A6B9/A1 /sheet56F5A6B9/A2 /sheet56F5A6B9/A3 /sheet56F5A6B9/A4
+    /sheet56F5A6B9/A5 /sheet56F5A6B9/A6 /sheet56F5A6B9/A7 /sheet56F5A6B9/B0 /sheet56F5A6B9/B1 /sheet56F5A6B9/B2 /sheet56F5A6B9/B3 /sheet56F5A6B9/B4
+    /sheet56F5A6B9/B5 /sheet56F5A6B9/B6 /sheet56F5A6B9/B7 /sheet56F5A6B9/C0 /sheet56F5A6B9/C1 /sheet56F5A6B9/C2 /sheet56F5A6B9/C3 /sheet56F5A6B9/C4
+    /sheet56F5A6B9/C5 /sheet56F5A6B9/C6 /sheet56F5A6B9/C7 /sheet56F5A6BA/SIN /sheet56F5A6BA/A0 /sheet56F5A6BA/A1 /sheet56F5A6BA/A2 /sheet56F5A6BA/A3
+    /sheet56F5A6BA/A4 /sheet56F5A6BA/A5 /sheet56F5A6BA/A6 /sheet56F5A6BA/A7 /sheet56F5A6BA/B0 /sheet56F5A6BA/B1 /sheet56F5A6BA/B2 /sheet56F5A6BA/B3
+    /sheet56F5A6BA/B4 /sheet56F5A6BA/B5 /sheet56F5A6BA/B6 /sheet56F5A6BA/B7 /sheet56F58BA4/D0 /sheet56F58BA4/D1 /sheet56F58BA4/D2 /sheet56F58BA4/D3
+    /sheet56F58BA4/D4 /sheet56F58BA4/D5 /sheet56F58BA4/D6 /sheet56F58BA4/D7 /sheet56F58BA4/B0 /sheet56F58BA4/B1 /sheet56F58BA4/B2 /sheet56F58BA4/B3
+    /sheet56F58BA4/B4 /sheet56F58BA4/A0 /sheet56F58BA4/B5 /sheet56F58BA4/A1 /sheet56F58BA4/B6 /sheet56F58BA4/A2 /sheet56F58BA4/B7 /sheet56F58BA4/A3
+    /sheet56F58BA4/A4 /sheet56F58BA4/A5 /sheet56F58BA4/A6 /sheet56F58BA4/A7 "Net-(U2-Pad22)" "/LED shift registers/C0" "/LED shift registers/C1" "/LED shift registers/C2"
+    "/LED shift registers/C3" "/LED shift registers/C4" "/LED shift registers/C5" "/LED shift registers/C6" "/LED shift registers/C7" /sheet570B3A7D/BLU7 /sheet570B3A7D/BLU6 /sheet570B3A7D/BLU5
+    /sheet570B3A7D/BLU4 /sheet570B3A7D/BLU3 /sheet570B3A7D/BLU2 /sheet570B3A7D/BLU1 /sheet570B3A7D/BLU0 "Net-(U4-Pad22)" /sheet56F5A6B9/D7 /sheet56F5A6B9/D6
+    /sheet56F5A6B9/D5 /sheet56F5A6B9/D4 /sheet56F5A6B9/D3 /sheet56F5A6B9/D2 /sheet56F5A6B9/D1 /sheet56F5A6B9/D0 "Net-(U6-Pad22)" /sheet56F5A6BA/C0
+    /sheet56F5A6BA/C1 /sheet56F5A6BA/C2 /sheet56F5A6BA/C3 /sheet56F5A6BA/C4 /sheet56F5A6BA/C5 /sheet56F5A6BA/C6 /sheet56F5A6BA/C7 "Net-(U10-Pad2)"
+    /sheet570B3C90/BLU0 /sheet570B3C90/BLU1 /sheet570B3C90/BLU2 /sheet570B3C90/BLU3 /sheet570B3C90/BLU4 /sheet570B3C90/BLU5 /sheet570B3C90/BLU6 /sheet570B3C90/BLU7
+    (clearance_class "kicad_default")
+    (via_rule kicad_default)
+    (rule
+      (width 250.0)
+    )
+    (circuit 
+      (use_layer F.Cu B.Cu)
+    )
+  )
+)
