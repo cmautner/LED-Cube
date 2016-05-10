@@ -1,13 +1,16 @@
 #include <TimerOne.h>
 #include "Panel.h"
 
-// Precondition: SCL is LOW
-// Postcondition: SCL is LOW
+// Precondition: SCL is HIGH
+// Postcondition: SCL is HIGH
 #define CLOCK_DATA(a) { \
-    digitalWrite(SDA, (a)); \
-    /*Serial.println((a), HEX);*/ \
-    digitalWrite(SCL, HIGH); \
-    digitalWrite(SCL, LOW); \
+  if (a) { \
+    PORTC = 0x10 | rowNdx; \
+    PORTC = 0x30 | rowNdx; \
+  } else { \
+    PORTC = rowNdx; \
+    PORTC = 0x20 | rowNdx; \
+  } \
 }
 
 Panel panels[2][NUM_PANELS];
@@ -65,6 +68,9 @@ void setup() {
     }
   }
 
+  digitalWrite(SCL, HIGH);
+  digitalWrite(BLANK_, LOW);
+
   Timer1.initialize(250);
   Timer1.attachInterrupt(timerInterrupt);
 }
@@ -84,27 +90,21 @@ void loop() {
           switch (x) {
             case 0:
               lastPanel.getPixel(x, y, pixel);
-              if (pixel.red > 0) {
-                pixel.red--;
-              }
+              pixel.red+=8;
               break;
             case 1:
               lastPanel.getPixel(x, y, pixel);
-              if (pixel.green > 0) {
-                pixel.green--;
-              }
+              pixel.green-=8;
               break;
             case 2:
               lastPanel.getPixel(x, y, pixel);
-              if (pixel.blue > 0) {
-                pixel.blue--;
-              }
+              pixel.blue+=8;
               break;
             case 3:
               lastPanel.getPixel(x, y, pixel);
-              pixel.red += 16;
-              pixel.green += 16;
-              pixel.blue += 16;
+              pixel.red += 8;
+              pixel.green -= 8;
+              pixel.blue += 8;
               break;
           }
           nextPanel.setPixel(x, y, pixel);
@@ -133,15 +133,54 @@ void loop() {
   }
 }
 
+
+//           cycle
+//val   0123 4567 89AB CDEF
+//0000  0000 0000 0000 0000
+//0001  1000 0000 0000 0000
+//0010  1000 0000 1000 0000
+//0011  1000 0010 0001 0000
+//
+//0100  1000 1000 1000 1000
+//0101  1000 1001 0010 0100
+//0110  1001 0010 1001 0010
+//0111  1001 0101 0100 1010
+//
+//1000  0110 1010 1011 0101
+//1001  0110 1101 0110 1101
+//1010  0111 0110 1101 1011
+//1011  0111 0111 0111 0111
+//
+//1100  0111 1101 1110 1111
+//1101  0111 1111 0111 1111
+//1110  0111 1111 1111 1111
+//1111  1111 1111 1111 1111
+
+const uint16_t cycleLookup[16] = {
+  0x0000, 0x8000, 0x8080, 0x8210,
+  0x8888, 0x8924, 0x9292, 0x954a,
+  0x6ab5, 0x6d6d, 0x76db, 0x7777,
+  0x7def, 0x7f7f, 0x7fff, 0xffff};
+
 void timerInterrupt(void) {
   // Clock out one entire row
+  const int cycleBit = 1 << refreshNdx;
+  
   for (int panelNdx = 0; panelNdx < NUM_PANELS; ++panelNdx) {
     Panel &panel = panels[timerFrameNdx][panelNdx];
     // Clock out the row starting at the far end
     for (int ledNdx = NUM_LEDS - 1; ledNdx >= 0; --ledNdx) {
       Pixel pixel;
       panel.getPixel(ledNdx, rowNdx, pixel);
-      CLOCK_DATA(pixel.green > 0 && pixel.green >> 4 >= refreshNdx);
+//      Serial.print("px.grn=");
+//      Serial.print(pixel.green >> 4, HEX);
+//      Serial.print(", cycleBit=");
+//      Serial.print(cycleBit, HEX);
+//      Serial.print(", cycleLookup[]=");
+//      Serial.print(cycleLookup[pixel.green >> 4], HEX);
+//      Serial.print(", []|bit=");
+//      Serial.println(cycleLookup[pixel.green >> 4] | cycleBit, HEX);      
+      CLOCK_DATA(cycleLookup[pixel.green >> 4] & cycleBit);
     }
   }
   for (int panelNdx = 0; panelNdx < NUM_PANELS; ++panelNdx) {
@@ -149,7 +188,7 @@ void timerInterrupt(void) {
     for (int ledNdx = NUM_LEDS - 1; ledNdx >= 0; --ledNdx) {
       Pixel pixel;
       panel.getPixel(ledNdx, rowNdx, pixel);
-      CLOCK_DATA(pixel.red > 0 && pixel.red >> 4 >= refreshNdx);
+      CLOCK_DATA(cycleLookup[pixel.red >> 4] & cycleBit);
     }
   }
   for (int panelNdx = 0; panelNdx < NUM_PANELS; ++panelNdx) {
@@ -157,26 +196,28 @@ void timerInterrupt(void) {
     for (int ledNdx = NUM_LEDS - 1; ledNdx >= 0; --ledNdx) {
       Pixel pixel;
       panel.getPixel(ledNdx, rowNdx, pixel);
-      CLOCK_DATA(pixel.blue > 0 && pixel.blue >> 4 >= refreshNdx);
+      CLOCK_DATA(cycleLookup[pixel.blue >> 4] & cycleBit);
     }
   }
-  digitalWrite(BLANK_, HIGH);
+//  digitalWrite(BLANK_, HIGH);
+  digitalWrite(SCL, LOW);
   digitalWrite(LATCH, HIGH);
   digitalWrite(LATCH, LOW);
-  PORTC = (PORTC & 0xF8) | rowNdx;
+//  PORTC = (PORTC & 0xF8) | rowNdx;
 //  Serial.print("rowNdx:");
 //  Serial.print(rowNdx);
 //  Serial.print(", PORTC:");
 //  Serial.println(PORTC, HEX);
-  digitalWrite(BLANK_, LOW);
+//  digitalWrite(BLANK_, LOW);
 
+  PORTC = 0x20 | rowNdx;
   if (++rowNdx >= NUM_ROWS) {
     rowNdx = 0;
-//    if (++refreshNdx >= NUM_REFRESHES) {
-//      refreshNdx = 0;
-//      nextFrameNdx = timerFrameNdx;
-//      timerFrameNdx = ++timerFrameNdx % 2;
-//    }
+    if (++refreshNdx >= NUM_REFRESHES) {
+      refreshNdx = 0;
+      nextFrameNdx = timerFrameNdx;
+      timerFrameNdx = ++timerFrameNdx % 2;
+    }
   }
 }
 
