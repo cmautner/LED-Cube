@@ -1,14 +1,19 @@
-#include <avr/io.h>
+#ifndef PIXEL_H
+#define PIXEL_H
 
-const uint8_t RED_INDEX = 0;
-const uint8_t GREEN_INDEX = 1;
-const uint8_t BLUE_INDEX = 2;
-const uint8_t NUM_COLORS = 3; // 3 colors
+#include <avr/io.h>
 
 class Pixel {
 public:
-  uint8_t red = 0;
-  uint8_t green = 0;
-  uint8_t blue = 0;
+  uint8_t red : 4, green : 4, blue : 4;
+  Pixel & operator= (const Pixel & other) {
+    if (this != &other) {
+      red = other.red;
+      green = other.green;
+      blue = other.blue;
+    }
+    return *this;
+  }
 };
 
+#endif // PIXEL_H

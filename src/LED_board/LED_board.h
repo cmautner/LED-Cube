@@ -1,14 +1,24 @@
-const uint8_t LED_SIZE = NUM_COLORS;
-const uint8_t NUM_LEDS = 8;
-const uint8_t ROW_SIZE = NUM_LEDS * LED_SIZE;
-const uint8_t ROW_BYTES = NUM_LEDS * LED_SIZE / 2; // 4 bits/color
-const uint8_t NUM_ROWS = 8;
-const uint8_t PANEL_SIZE = NUM_ROWS * ROW_SIZE;
-const uint8_t NUM_PANELS = 1;
-const uint8_t NUM_REFRESHES = 16;
-const uint8_t DDRC_INIT = 0x37; // PC0-2, 4-5 as outputs. All others as inputs
-const uint8_t DDRB_INIT = 0x23; // PB0-1,5 as outputs. All others as inputs
+#ifndef LED_BOARD_H
+#define LED_BOARD_H
 
-const int BLANK_ = 8;  // Enable for LEDs, active low
-const int LATCH = 9;
+#include "Panel.h"
 
+extern const int BLANK_;  // Enable for LEDs, active low
+extern const int LATCH;
+
+// In order from last shift register (first data shifted in) to first.
+enum PanelId { 
+  PANEL_BACK = 0,
+  PANEL_TOP,
+  PANEL_LEFT,
+  PANEL_FRONT,
+  PANEL_RIGHT,
+  NUM_PANELS
+};
+
+extern Panel panels[2][NUM_PANELS];
+extern uint8_t loopFrameNdx;
+extern uint8_t timerFrameNdx;
+extern volatile uint8_t nextFrameNdx;
+
+#endif //LED_BOARD_H
