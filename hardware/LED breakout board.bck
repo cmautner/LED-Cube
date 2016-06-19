@@ -1,0 +1,27 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP ARDUINO_as_UNO
+D schématic for build a shield or clone an "arduino as UNO " based on revision 3
+K arduino
+F http://arduino.cc/en/Main/ArduinoBoardUno
+$ENDCMP
+#
+$CMP BD910
+D 15A, Silicon Power Transistors PNP, TO-220
+K  Power Transistor PNP
+F http://www.st.com/internet/com/TECHNICAL_RESOURCES/TECHNICAL_LITERATURE/DATASHEET/CD00001277.pdf
+$ENDCMP
+#
+$CMP BD912
+D BD910, 15A, Silicon Power Transistors PNP, TO-220
+K Power Transistor PNP
+F http://www.st.com/internet/com/TECHNICAL_RESOURCES/TECHNICAL_LITERATURE/DATASHEET/CD00001277.pdf
+$ENDCMP
+#
+$CMP IRF9540N
+D -100V Vds, -23A Id, HEXFET P-Channel MOSFET, TO-220
+K HEXFET P-Channel MOSFET
+F http://www.irf.com/product-info/datasheets/data/irf9540n.pdf
+$ENDCMP
+#
+#End Doc Library

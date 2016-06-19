@@ -1,0 +1,55 @@
+Reference, Value, Footprint, Datasheet,
+C1,.01uF,Capacitors_ThroughHole:C_Disc_D3_P2.5,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195103070&uq=635967550073414040,
+C10,.01uF,Capacitors_ThroughHole:C_Disc_D3_P2.5,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195103070&uq=635967550073414040,
+C11,.01uF,Capacitors_ThroughHole:C_Disc_D3_P2.5,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195103070&uq=635967550073414040,
+C12,.01uF,Capacitors_ThroughHole:C_Disc_D3_P2.5,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195103070&uq=635967550073414040,
+C13,.01uF,Capacitors_ThroughHole:C_Disc_D3_P2.5,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195103070&uq=635967550073414040,
+C14,.01uF,Capacitors_ThroughHole:C_Disc_D3_P2.5,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195103070&uq=635967550073414040,
+C15,.01uF,Capacitors_ThroughHole:C_Disc_D3_P2.5,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195103070&uq=635967550073414040,
+C16,.01uF,Capacitors_ThroughHole:C_Disc_D3_P2.5,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195103070&uq=635967550073414040,
+C17,.01uF,Capacitors_ThroughHole:C_Disc_D3_P2.5,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195103070&uq=635967550073414040,
+C18,.01uF,Capacitors_ThroughHole:C_Disc_D3_P2.5,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195103070&uq=635967550073414040,
+C2,.01uF,Capacitors_ThroughHole:C_Disc_D3_P2.5,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195103070&uq=635967550073414040,
+C4,.01uF,Capacitors_ThroughHole:C_Disc_D3_P2.5,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195103070&uq=635967550073414040,
+C5,.01uF,Capacitors_ThroughHole:C_Disc_D3_P2.5,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195103070&uq=635967550073414040,
+C6,.01uF,Capacitors_ThroughHole:C_Disc_D3_P2.5,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195103070&uq=635967550073414040,
+C7,.01uF,Capacitors_ThroughHole:C_Disc_D3_P2.5,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195103070&uq=635967550073414040,
+C8,.01uF,Capacitors_ThroughHole:C_Disc_D3_P2.5,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195103070&uq=635967550073414040,
+C9,.01uF,Capacitors_ThroughHole:C_Disc_D3_P2.5,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195103070&uq=635967550073414040,
+C19,100uF,Capacitors_ThroughHole:C_Radial_D5_L11_P2.5,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195103414&uq=635967550073414040,
+C3,100uF,Capacitors_ThroughHole:C_Radial_D5_L11_P2.5,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195103414&uq=635967550073414040,
+U1,74LS138,Housings_DIP:DIP-16_W7.62mm,Noisebridge,
+U10,TLC5928,Housings_DIP:DIP-24_W7.62mm,DM13A used,http://www.siti.com.tw/product/spec/LED/SP-DM13A-A.006.pdf
+U2,TLC5928,Housings_DIP:DIP-24_W7.62mm,DM13A used,http://www.siti.com.tw/product/spec/LED/SP-DM13A-A.006.pdf
+U3,TLC5928,Housings_DIP:DIP-24_W7.62mm,DM13A used,http://www.siti.com.tw/product/spec/LED/SP-DM13A-A.006.pdf
+U4,TLC5928,Housings_DIP:DIP-24_W7.62mm,DM13A used,http://www.siti.com.tw/product/spec/LED/SP-DM13A-A.006.pdf
+U5,TLC5928,Housings_DIP:DIP-24_W7.62mm,DM13A used,http://www.siti.com.tw/product/spec/LED/SP-DM13A-A.006.pdf
+U6,TLC5928,Housings_DIP:DIP-24_W7.62mm,DM13A used,http://www.siti.com.tw/product/spec/LED/SP-DM13A-A.006.pdf
+U7,TLC5928,Housings_DIP:DIP-24_W7.62mm,DM13A used,http://www.siti.com.tw/product/spec/LED/SP-DM13A-A.006.pdf
+U9,TLC5928,Housings_DIP:DIP-24_W7.62mm,DM13A used,http://www.siti.com.tw/product/spec/LED/SP-DM13A-A.006.pdf
+U11,8x8_LED_Matrix,LED breakout board:8x8_LED_Matrix,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195158972&uq=635967824604234949,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195159109&uq=635967824604234949
+U12,8x8_LED_Matrix,LED breakout board:8x8_LED_Matrix,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195158972&uq=635967824604234949,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195159109&uq=635967824604234949
+U13,8x8_LED_Matrix,LED breakout board:8x8_LED_Matrix,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195158972&uq=635967824604234949,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195159109&uq=635967824604234949
+U14,8x8_LED_Matrix,LED breakout board:8x8_LED_Matrix,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195158972&uq=635967824604234949,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195159109&uq=635967824604234949
+U8,8x8_LED_Matrix,LED breakout board:8x8_LED_Matrix,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195158972&uq=635967824604234949,http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=195159109&uq=635967824604234949
+SH1,ARDUINO_as_UNO,LED breakout board:ARDUINO_as_UNO_R3,,
+Q1,BD910,Power_Integrations:TO-220,NTE332 used,http://www.frys.com/product/1800090
+Q2,BD910,Power_Integrations:TO-220,NTE332 used,http://www.frys.com/product/1800090
+Q3,BD910,Power_Integrations:TO-220,NTE332 used,http://www.frys.com/product/1800090
+Q4,BD910,Power_Integrations:TO-220,NTE332 used,http://www.frys.com/product/1800090
+Q5,BD910,Power_Integrations:TO-220,NTE332 used,http://www.frys.com/product/1800090
+Q6,BD910,Power_Integrations:TO-220,NTE332 used,http://www.frys.com/product/1800090
+Q7,BD910,Power_Integrations:TO-220,NTE332 used,http://www.frys.com/product/1800090
+Q8,BD910,Power_Integrations:TO-220,NTE332 used,http://www.frys.com/product/1800090
+R9,220,Resistors_ThroughHole:Resistor_Horizontal_RM10mm,,
+R10,654,Resistors_ThroughHole:Resistor_Horizontal_RM10mm,,
+R1,2.2K,Resistors_ThroughHole:Resistor_Horizontal_RM10mm,,
+R11,2.2K,Resistors_ThroughHole:Resistor_Horizontal_RM10mm,,
+R2,2.2K,Resistors_ThroughHole:Resistor_Horizontal_RM10mm,,
+R3,2.2K,Resistors_ThroughHole:Resistor_Horizontal_RM10mm,,
+R4,2.2K,Resistors_ThroughHole:Resistor_Horizontal_RM10mm,,
+R5,2.2K,Resistors_ThroughHole:Resistor_Horizontal_RM10mm,,
+R6,2.2K,Resistors_ThroughHole:Resistor_Horizontal_RM10mm,,
+R7,2.2K,Resistors_ThroughHole:Resistor_Horizontal_RM10mm,,
+R8,2.2K,Resistors_ThroughHole:Resistor_Horizontal_RM10mm,,
+U15,LM338K,TO_SOT_Packages_THT:TO3,http://www.amazon.com/1-2V-LM338K-LM338-Voltage-Regulator/dp/B00SHU836S,

@@ -1,0 +1,244 @@
+Info: Reading netlist file "C:\Users\Craig\Documents\Electronics\Arduino UNO R3\LED breakout board\LED breakout board.net".
+
+Info: Using references to match components and footprints.
+
+Info: Checking netlist component footprint "C1:/5707AA9D:Capacitors_ThroughHole:C_Disc_D3_P2.5".
+
+Info: Checking netlist component footprint "C2:/57097171:Capacitors_ThroughHole:C_Disc_D3_P2.5".
+
+Info: Checking netlist component footprint "C3:/5708F0E9:Capacitors_ThroughHole:C_Radial_D5_L11_P2.5".
+
+Info: Checking netlist component footprint "C4:/570969B6:Capacitors_ThroughHole:C_Disc_D3_P2.5".
+
+Info: Checking netlist component footprint "C5:/57097184:Capacitors_ThroughHole:C_Disc_D3_P2.5".
+
+Info: Checking netlist component footprint "C6:/570A4BFB:Capacitors_ThroughHole:C_Disc_D3_P2.5".
+
+Info: Checking netlist component footprint "C7:/57096BC1:Capacitors_ThroughHole:C_Disc_D3_P2.5".
+
+Info: Checking netlist component footprint "C8:/57097197:Capacitors_ThroughHole:C_Disc_D3_P2.5".
+
+Info: Checking netlist component footprint "C9:/57096BD4:Capacitors_ThroughHole:C_Disc_D3_P2.5".
+
+Info: Checking netlist component footprint "C10:/570971AA:Capacitors_ThroughHole:C_Disc_D3_P2.5".
+
+Info: Checking netlist component footprint "C11:/56F4B2FA/5708D23F:Capacitors_ThroughHole:C_Disc_D3_P2.5".
+
+Info: Checking netlist component footprint "C12:/56F4B2FA/5708C939:Capacitors_ThroughHole:C_Disc_D3_P2.5".
+
+Info: Checking netlist component footprint "C13:/56F5A6C5/5708D23F:Capacitors_ThroughHole:C_Disc_D3_P2.5".
+
+Info: Checking netlist component footprint "C14:/56F5A6C5/5708C939:Capacitors_ThroughHole:C_Disc_D3_P2.5".
+
+Info: Checking netlist component footprint "C15:/56F5A6EB/5708D23F:Capacitors_ThroughHole:C_Disc_D3_P2.5".
+
+Info: Checking netlist component footprint "C16:/56F5A6EB/5708C939:Capacitors_ThroughHole:C_Disc_D3_P2.5".
+
+Info: Checking netlist component footprint "C17:/56F58BAF/5708D23F:Capacitors_ThroughHole:C_Disc_D3_P2.5".
+
+Info: Checking netlist component footprint "C18:/56F58BAF/5708C939:Capacitors_ThroughHole:C_Disc_D3_P2.5".
+
+Info: Checking netlist component footprint "C19:/571203BC:Capacitors_ThroughHole:C_Radial_D5_L11_P2.5".
+
+Info: Checking netlist component footprint "Q1:/5706E14D:Power_Integrations:TO-220".
+
+Info: Checking netlist component footprint "Q2:/5706E45C:Power_Integrations:TO-220".
+
+Info: Checking netlist component footprint "Q3:/5706E77B:Power_Integrations:TO-220".
+
+Info: Checking netlist component footprint "Q4:/5706EAB4:Power_Integrations:TO-220".
+
+Info: Checking netlist component footprint "Q5:/5706D019:Power_Integrations:TO-220".
+
+Info: Checking netlist component footprint "Q6:/5706E2D3:Power_Integrations:TO-220".
+
+Info: Checking netlist component footprint "Q7:/5706E5EA:Power_Integrations:TO-220".
+
+Info: Checking netlist component footprint "Q8:/5706E921:Power_Integrations:TO-220".
+
+Info: Checking netlist component footprint "R1:/56F4B2FA/56F5353C:Resistors_ThroughHole:Resistor_Horizontal_RM10mm".
+
+Info: Checking netlist component footprint "R2:/56F4B2FA/56F536FF:Resistors_ThroughHole:Resistor_Horizontal_RM10mm".
+
+Info: Checking netlist component footprint "R3:/56F5A6C5/56F5353C:Resistors_ThroughHole:Resistor_Horizontal_RM10mm".
+
+Info: Checking netlist component footprint "R4:/56F5A6C5/56F536FF:Resistors_ThroughHole:Resistor_Horizontal_RM10mm".
+
+Info: Checking netlist component footprint "R5:/56F5A6EB/56F5353C:Resistors_ThroughHole:Resistor_Horizontal_RM10mm".
+
+Info: Checking netlist component footprint "R6:/56F5A6EB/56F536FF:Resistors_ThroughHole:Resistor_Horizontal_RM10mm".
+
+Info: Checking netlist component footprint "R7:/56F58BAF/56F5353C:Resistors_ThroughHole:Resistor_Horizontal_RM10mm".
+
+Info: Checking netlist component footprint "R8:/56F58BAF/56F536FF:Resistors_ThroughHole:Resistor_Horizontal_RM10mm".
+
+Info: Checking netlist component footprint "R9:/571061B3:Resistors_ThroughHole:Resistor_Horizontal_RM10mm".
+
+Info: Checking netlist component footprint "R10:/57106374:Resistors_ThroughHole:Resistor_Horizontal_RM10mm".
+
+Info: Checking netlist component footprint "R11:/5713E408:Resistors_ThroughHole:Resistor_Horizontal_RM10mm".
+
+Adding new component "R11:/5713E408" footprint "Resistors_ThroughHole:Resistor_Horizontal_RM10mm".
+
+Changing component "R11:/5713E408" pin "1" net name from "" to "VCC".
+
+Changing component "R11:/5713E408" pin "2" net name from "" to "Net-(R11-Pad2)".
+
+Info: Checking netlist component footprint "SH1:/56F6C242:LED breakout board:ARDUINO_as_UNO_R3".
+
+Changing component "SH1:/56F6C242" pin "NC" net name from "" to "Net-(SH1-PadNC)".
+
+Changing component "SH1:/56F6C242" pin "RST" net name from "" to "Net-(SH1-PadRST)".
+
+Changing component "SH1:/56F6C242" pin "3V3" net name from "" to "Net-(SH1-Pad3V3)".
+
+Changing component "SH1:/56F6C242" pin "5V" net name from "" to "Net-(SH1-Pad5V)".
+
+Changing component "SH1:/56F6C242" pin "A3" net name from "" to "Net-(SH1-PadA3)".
+
+Changing component "SH1:/56F6C242" pin "A4/1" net name from "" to "Net-(SH1-PadA4/1)".
+
+Changing component "SH1:/56F6C242" pin "A5/1" net name from "" to "Net-(SH1-PadA5/1)".
+
+Changing component "SH1:/56F6C242" pin "0" net name from "" to "Net-(SH1-Pad0)".
+
+Changing component "SH1:/56F6C242" pin "1" net name from "" to "Net-(SH1-Pad1)".
+
+Changing component "SH1:/56F6C242" pin "2" net name from "" to "Net-(SH1-Pad2)".
+
+Changing component "SH1:/56F6C242" pin "3" net name from "" to "Net-(SH1-Pad3)".
+
+Changing component "SH1:/56F6C242" pin "4" net name from "" to "Net-(SH1-Pad4)".
+
+Changing component "SH1:/56F6C242" pin "5" net name from "" to "Net-(SH1-Pad5)".
+
+Changing component "SH1:/56F6C242" pin "6" net name from "" to "Net-(SH1-Pad6)".
+
+Changing component "SH1:/56F6C242" pin "7" net name from "" to "Net-(SH1-Pad7)".
+
+Changing component "SH1:/56F6C242" pin "10" net name from "" to "Net-(SH1-Pad10)".
+
+Changing component "SH1:/56F6C242" pin "11" net name from "" to "Net-(SH1-Pad11)".
+
+Changing component "SH1:/56F6C242" pin "12" net name from "" to "Net-(SH1-Pad12)".
+
+Changing component "SH1:/56F6C242" pin "13" net name from "" to "Net-(SH1-Pad13)".
+
+Changing component "SH1:/56F6C242" pin "GND3" net name from "" to "Net-(SH1-PadGND3)".
+
+Changing component "SH1:/56F6C242" pin "AREF" net name from "" to "Net-(SH1-PadAREF)".
+
+Changing component "SH1:/56F6C242" pin "IREF" net name from "" to "Net-(SH1-PadIREF)".
+
+Info: Checking netlist component footprint "U1:/56F4A957:Housings_DIP:DIP-16_W7.62mm".
+
+Changing component "U1:/56F4A957" pin "6" net name from "" to "Net-(R11-Pad2)".
+
+Info: Checking netlist component footprint "U2:/56F4B2FA/56F87B17:Housings_DIP:DIP-24_W7.62mm".
+
+Info: Checking netlist component footprint "U3:/56F4B2FA/56F87B4F:Housings_DIP:DIP-24_W7.62mm".
+
+Info: Checking netlist component footprint "U4:/56F5A6C5/56F87B17:Housings_DIP:DIP-24_W7.62mm".
+
+Info: Checking netlist component footprint "U5:/56F5A6C5/56F87B4F:Housings_DIP:DIP-24_W7.62mm".
+
+Info: Checking netlist component footprint "U6:/56F5A6EB/56F87B17:Housings_DIP:DIP-24_W7.62mm".
+
+Info: Checking netlist component footprint "U7:/56F5A6EB/56F87B4F:Housings_DIP:DIP-24_W7.62mm".
+
+Changing component "U7:/56F5A6EB/56F87B4F" pin "13" net name from "" to "/sheet56F5A6BA/D0".
+
+Changing component "U7:/56F5A6EB/56F87B4F" pin "14" net name from "" to "/sheet56F5A6BA/D1".
+
+Changing component "U7:/56F5A6EB/56F87B4F" pin "15" net name from "" to "/sheet56F5A6BA/D2".
+
+Changing component "U7:/56F5A6EB/56F87B4F" pin "16" net name from "" to "/sheet56F5A6BA/D3".
+
+Changing component "U7:/56F5A6EB/56F87B4F" pin "17" net name from "" to "/sheet56F5A6BA/D4".
+
+Changing component "U7:/56F5A6EB/56F87B4F" pin "18" net name from "" to "/sheet56F5A6BA/D5".
+
+Changing component "U7:/56F5A6EB/56F87B4F" pin "19" net name from "" to "/sheet56F5A6BA/D6".
+
+Changing component "U7:/56F5A6EB/56F87B4F" pin "20" net name from "" to "/sheet56F5A6BA/D7".
+
+Changing component "U7:/56F5A6EB/56F87B4F" pin "22" net name from "" to "/sheet56F5A6BA/SOUT".
+
+Info: Checking netlist component footprint "U8:/56F793F6/56F4BEA6:LED breakout board:8x8_LED_Matrix".
+
+Info: Checking netlist component footprint "U9:/56F58BAF/56F87B17:Housings_DIP:DIP-24_W7.62mm".
+
+Info: Checking netlist component footprint "U10:/56F58BAF/56F87B4F:Housings_DIP:DIP-24_W7.62mm".
+
+Info: Checking netlist component footprint "U11:/570B3A83/56F4BEA6:LED breakout board:8x8_LED_Matrix".
+
+Info: Checking netlist component footprint "U12:/570B3C96/56F4BEA6:LED breakout board:8x8_LED_Matrix".
+
+Info: Checking netlist component footprint "U13:/570B3EE5/56F4BEA6:LED breakout board:8x8_LED_Matrix".
+
+Info: Checking netlist component footprint "U14:/570B4188/56F4BEA6:LED breakout board:8x8_LED_Matrix".
+
+Info: Checking netlist component footprint "U15:/5711E4DB:TO_SOT_Packages_THT:TO3".
+
+Remove single pad net "/sheet56F5A6BA/D0" on "U7" pad '13'
+
+Remove single pad net "/sheet56F5A6BA/D1" on "U7" pad '14'
+
+Remove single pad net "/sheet56F5A6BA/D2" on "U7" pad '15'
+
+Remove single pad net "/sheet56F5A6BA/D3" on "U7" pad '16'
+
+Remove single pad net "/sheet56F5A6BA/D4" on "U7" pad '17'
+
+Remove single pad net "/sheet56F5A6BA/D5" on "U7" pad '18'
+
+Remove single pad net "/sheet56F5A6BA/D6" on "U7" pad '19'
+
+Remove single pad net "/sheet56F5A6BA/D7" on "U7" pad '20'
+
+Remove single pad net "/sheet56F5A6BA/SOUT" on "U7" pad '22'
+
+Remove single pad net "Net-(SH1-Pad0)" on "SH1" pad '0'
+
+Remove single pad net "Net-(SH1-Pad1)" on "SH1" pad '1'
+
+Remove single pad net "Net-(SH1-Pad10)" on "SH1" pad '10'
+
+Remove single pad net "Net-(SH1-Pad11)" on "SH1" pad '11'
+
+Remove single pad net "Net-(SH1-Pad12)" on "SH1" pad '12'
+
+Remove single pad net "Net-(SH1-Pad13)" on "SH1" pad '13'
+
+Remove single pad net "Net-(SH1-Pad2)" on "SH1" pad '2'
+
+Remove single pad net "Net-(SH1-Pad3)" on "SH1" pad '3'
+
+Remove single pad net "Net-(SH1-Pad3V3)" on "SH1" pad '3V3'
+
+Remove single pad net "Net-(SH1-Pad4)" on "SH1" pad '4'
+
+Remove single pad net "Net-(SH1-Pad5)" on "SH1" pad '5'
+
+Remove single pad net "Net-(SH1-Pad5V)" on "SH1" pad '5V'
+
+Remove single pad net "Net-(SH1-Pad6)" on "SH1" pad '6'
+
+Remove single pad net "Net-(SH1-Pad7)" on "SH1" pad '7'
+
+Remove single pad net "Net-(SH1-PadA3)" on "SH1" pad 'A3'
+
+Remove single pad net "Net-(SH1-PadA4/1)" on "SH1" pad 'A4/1'
+
+Remove single pad net "Net-(SH1-PadA5/1)" on "SH1" pad 'A5/1'
+
+Remove single pad net "Net-(SH1-PadAREF)" on "SH1" pad 'AREF'
+
+Remove single pad net "Net-(SH1-PadGND3)" on "SH1" pad 'GND3'
+
+Remove single pad net "Net-(SH1-PadIREF)" on "SH1" pad 'IREF'
+
+Remove single pad net "Net-(SH1-PadNC)" on "SH1" pad 'NC'
+
+Remove single pad net "Net-(SH1-PadRST)" on "SH1" pad 'RST'
+

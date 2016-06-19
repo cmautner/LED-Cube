@@ -8,7 +8,8 @@ const uint8_t NUM_ROWS = 8;
 class Panel {
 public:
   Panel() { }
-  Vector& getRow(int index);
+  Vector *getRow(int index);
+  Vector *getShiftRow(int index);
   void setOrientation(Orientation orientation) {
     m_orientation = orientation;
   }

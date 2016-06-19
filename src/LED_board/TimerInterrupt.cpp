@@ -2,7 +2,7 @@
 #include "TimerInterrupt.h"
 #include "LED_board.h"
 
-
+extern void dumpAllPanels();
 const uint8_t NUM_REFRESHES = 16;
 
 static uint8_t refreshNdx;
@@ -17,6 +17,7 @@ static uint8_t rowNdx;
   } else { \
     PORTC = rowNdx; \
     PORTC = 0x20 | rowNdx; \
+    Serial.println(a, HEX); \
   } \
 }
 
@@ -49,63 +50,96 @@ const uint16_t cycleLookup[16] = {
   0x7def, 0x7f7f, 0x7fff, 0xffff};
 
 void timerInterrupt(void) {
+
+  if (++rowNdx >= NUM_ROWS) {
+    rowNdx = 0;
+    if (++refreshNdx >= NUM_REFRESHES) {
+#ifdef DEBUG
+      Serial.print("!");
+#endif
+      refreshNdx = 0;
+    }
+  }
+
+  uint8_t frameNdx = timerFrameNdx;
   // Clock out one entire row
   const int cycleBit = 1 << refreshNdx;
   
 //  Serial.print("timerInterrupt timerFrameNdx ");
-//  Serial.print(timerFrameNdx);
+//  Serial.println(timerFrameNdx);
 //  Serial.print(", refreshNdx ");
 //  Serial.print(refreshNdx);
 //  Serial.print(", row ");
 //  Serial.println(rowNdx);
-  for (int panelNdx = PANEL_BACK; panelNdx < NUM_PANELS; ++panelNdx) {
+  for (int panelNdx = PANEL_FIRST; panelNdx < NUM_PANELS; ++panelNdx) {
 //    Serial.print("P");
 //    Serial.print(panelNdx);
 //    Serial.print(" ");
-    Panel &panel = panels[timerFrameNdx][panelNdx];
+    Panel *panel = &panels[frameNdx][panelNdx];
     // Clock out the row starting at the far end
-    Vector &row = panel.getRow(rowNdx);
-    
-    for (int ledNdx = NUM_LEDS - 1; ledNdx >= 0; --ledNdx) {
-      Pixel &pixel = row.pixels[ledNdx];
-      CLOCK_DATA(cycleLookup[pixel.green] & cycleBit);
-    }
-    for (int ledNdx = NUM_LEDS - 1; ledNdx >= 0; --ledNdx) {
-      Pixel &pixel = row.pixels[ledNdx];
-      CLOCK_DATA(cycleLookup[pixel.red] & cycleBit);
-    }
-    for (int ledNdx = NUM_LEDS - 1; ledNdx >= 0; --ledNdx) {
-      Pixel &pixel = row.pixels[ledNdx];
-      CLOCK_DATA(cycleLookup[pixel.blue] & cycleBit);
-    }
-//      Serial.print("px.grn=");
-//      Serial.print(cycleLookup[pixel.green] & cycleBit, HEX);
-//      Serial.print("-");
-//      Serial.print(cycleLookup[pixel.red] & cycleBit, HEX);
-//      Serial.print("-");
-//      Serial.print(cycleLookup[pixel.blue] & cycleBit, HEX);
+    Vector *pRow = panel->getShiftRow(rowNdx);
+
+    for (int color = FIRST_COLOR; color < NUM_COLORS; ++color) {
+//      Serial.print("color=");
+//      Serial.print(color);
 //      Serial.print(" ");
-//    Serial.println();
+      uint32_t leds = pRow->leds[color];
+      if (panelNdx == PANEL_TOP) {
+//        Serial.print(rowNdx);
+//        Serial.print(" ");
+//        Serial.print(leds, HEX);
+//        Serial.println();
+//          delayMicroseconds(250);
+      }
+      for (int ledNdx = 0; ledNdx < NUM_LEDS; ++ledNdx, leds >>=  4) {
+        if (!(cycleLookup[leds & 0xf] & cycleBit)) {
+//        if (cycleLookup[leds & 0xf] != 0xffff) {
+//        if ((leds & 0xf) != 0xf) {
+          pRow->print();
+          Serial.print(leds, HEX);
+          Serial.print(", ");
+          Serial.print(leds & 0xf, HEX);
+          Serial.print(", ");
+          Serial.println(cycleLookup[leds & 0xf], HEX);
+        }
+        int bit;
+        if ((rowNdx == 0) && (ledNdx == 0) || (rowNdx == 7) && (ledNdx == 7)) {
+           bit = (color ^ panelNdx) & 7 ? 0x10 : 0; 
+        } else {
+          bit = 1;
+        }
+        // clock is low, data is low
+        if (bit) {
+          PORTC |= 0x10;
+        } else {
+          PORTC &= ~0x10;
+        }
+        // clock
+        PORTC |= 0x20;
+        // return to low
+        PORTC &= ~0x30;
+//        CLOCK_DATA(cycleLookup[leds & 0xf] & cycleBit);
+      }
+    }
   }
-//  digitalWrite(BLANK_, HIGH);
-  digitalWrite(SCL, LOW);
+  digitalWrite(BLANK_, HIGH);
   digitalWrite(LATCH, HIGH);
   digitalWrite(LATCH, LOW);
+  PORTC = rowNdx;
+  digitalWrite(BLANK_, LOW);
+//  digitalWrite(SCL, LOW);
+
+
+
+
+
+
+
 //  PORTC = (PORTC & 0xF8) | rowNdx;
 //  Serial.print("rowNdx:");
 //  Serial.print(rowNdx);
 //  Serial.print(", PORTC:");
 //  Serial.println(PORTC, HEX);
 //  digitalWrite(BLANK_, LOW);
-
-  PORTC = 0x20 | rowNdx;
-  if (++rowNdx >= NUM_ROWS) {
-    rowNdx = 0;
-    if (++refreshNdx >= NUM_REFRESHES) {
-      refreshNdx = 0;
-      nextFrameNdx = timerFrameNdx;
-      timerFrameNdx = ++timerFrameNdx % 2;
-    }
-  }
 }
 

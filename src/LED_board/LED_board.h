@@ -6,8 +6,15 @@
 extern const int BLANK_;  // Enable for LEDs, active low
 extern const int LATCH;
 
+enum PingPongBuffers {
+  PING = 0,
+  PONG,
+  NUM_BUFFERS
+};
+
 // In order from last shift register (first data shifted in) to first.
-enum PanelId { 
+enum PanelId {
+  PANEL_FIRST = 0,
   PANEL_BACK = 0,
   PANEL_TOP,
   PANEL_LEFT,
@@ -16,9 +23,8 @@ enum PanelId {
   NUM_PANELS
 };
 
-extern Panel panels[2][NUM_PANELS];
-extern uint8_t loopFrameNdx;
-extern uint8_t timerFrameNdx;
-extern volatile uint8_t nextFrameNdx;
+extern Panel panels[NUM_BUFFERS][NUM_PANELS];
+extern volatile uint8_t loopFrameNdx;
+extern volatile uint8_t timerFrameNdx;
 
 #endif //LED_BOARD_H

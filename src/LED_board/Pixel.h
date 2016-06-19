@@ -3,8 +3,14 @@
 
 #include <avr/io.h>
 
+// In shift order, based on hardware.
+enum PixelColor { FIRST_COLOR = 0, GREEN = 0, RED, BLUE, NUM_COLORS };
 class Pixel {
 public:
+  Pixel(uint8_t _red = 0, uint8_t _green = 0, uint8_t _blue = 0) : red(_red), green(_green), blue(_blue) { }
+  void set(uint8_t _red, uint8_t _green, uint8_t _blue) {
+    red = _red; green = _green; blue = _blue;
+  }
   uint8_t red : 4, green : 4, blue : 4;
   Pixel & operator= (const Pixel & other) {
     if (this != &other) {
@@ -13,6 +19,15 @@ public:
       blue = other.blue;
     }
     return *this;
+  }
+  void print(const char *prefix = "") {
+    Serial.print(prefix);
+    Serial.print(green, HEX);
+    Serial.print("-");
+    Serial.print(red, HEX);
+    Serial.print("-");
+    Serial.print(blue, HEX);
+    Serial.print(" ");
   }
 };
 

@@ -1,0 +1,4 @@
+(fp_lib_table
+  (lib (name SHIELD_ARDUINO)(type KiCad)(uri "C:\\Users\\Craig\\Documents\\Electronics\\Arduino UNO R3\\Librairie_kicad_arduino\\Library_footprint_shield_arduino\\SHIELD_ARDUINO.pretty")(options "")(descr ""))
+  (lib (name "LED breakout board")(type KiCad)(uri "$(KIPRJMOD)\\LED breakout board.pretty")(options "")(descr ""))
+)
