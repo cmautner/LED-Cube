@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "TimerInterrupt.h"
+#include "Refresh.h"
 #include "LED_board.h"
 
 static uint8_t refreshNdx;
@@ -47,7 +47,7 @@ const uint16_t dimmingSchedule[16] = {
 const uint16_t dimmingSchedule[4] = {
   0x0, 0x8, 0xa, 0xf};
 #endif
-void timerInterrupt(void) {
+void refresh(void) {
 
 
   if (++rowNdx >= NUM_ROWS) {

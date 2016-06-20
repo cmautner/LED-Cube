@@ -1,6 +1,6 @@
 #include <TimerOne.h>
 #include "Panel.h"
-#include "TimerInterrupt.h"
+#include "Refresh.h"
 #include "LED_board.h"
 
 //#define DEBUG
@@ -126,7 +126,7 @@ unsigned long lastTime = 0;
 unsigned long thisTime = 0;
 
 void loop() {
-  timerInterrupt();
+  refresh();
 }
 
 #if 0
