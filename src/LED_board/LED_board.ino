@@ -76,12 +76,12 @@ void setup() {
         Vector *pVector = panels[frameNdx][panelNdx].getRow(rowNdx);
         for (int pixelNdx = 0; pixelNdx < NUM_LEDS; ++pixelNdx) {
           // PANEL_BACK yellow, PANEL_TOP red, PANEL_LEFT green, PANEL_FRONT blue, PANEL_RIGHT purple
-//          pixel.red = (panelNdx == PANEL_TOP || panelNdx == PANEL_BACK || panelNdx == PANEL_RIGHT) ? 0xf : 0;
-//          pixel.green = (panelNdx == PANEL_LEFT || panelNdx == PANEL_BACK) ? 0xf : 0;
-//          pixel.blue = (panelNdx == PANEL_FRONT || panelNdx == PANEL_RIGHT) ? 0xf : 0;
-          pixel.red = 0xf;
-          pixel.green = 0xf;
-          pixel.blue = 0xf;
+          pixel.red = (panelNdx == PANEL_TOP || panelNdx == PANEL_BACK || panelNdx == PANEL_RIGHT) ? DIM_MASK : 0;
+          pixel.green = (panelNdx == PANEL_LEFT || panelNdx == PANEL_BACK) ? DIM_MASK : 0;
+          pixel.blue = (panelNdx == PANEL_FRONT || panelNdx == PANEL_RIGHT) ? DIM_MASK : 0;
+//          pixel.red = 0xf;
+//          pixel.green = 0xf;
+//          pixel.blue = 0xf;
           pVector->setLed(pixelNdx, pixel);
 //        Serial.print("x=");
 //        Serial.print(x);
@@ -99,25 +99,15 @@ void setup() {
   }
 
   for (int panelNdx = PANEL_FIRST; panelNdx < NUM_PANELS; ++panelNdx) {
-    // Set right edge of row 0 to white
-    Vector *pVector = panels[PONG][panelNdx].getRow(0);
-    Pixel pixel(0xf, 0xf, 0xf);
-    pVector->setLed(0, pixel);
-
-/*
-    // set left edge of row 0 to black
-    pixel.set(0, 0, 0);
-    pVector->setLed(7, pixel);
-
-    // Set right edge of row 4 to purple
-    pVector = panels[PONG][panelNdx].getRow(4);
-    pixel.set(0, 0xf, 0xf);
-    pVector->setLed(0, pixel);
-
-    // Set left edge of row 4 to white
-    pixel.set(0xf, 0xf, 0xf);
-    pVector->setLed(7, pixel);
-*/
+    for (int rowNdx = 0; rowNdx < NUM_ROWS; ++rowNdx) {
+      for (int ledNdx = 0; ledNdx < NUM_LEDS; ++ledNdx) {
+        if (((rowNdx == 0) && (ledNdx == 0)) || ((rowNdx == 7) && (ledNdx == 7))) {
+          Vector *pVector = panels[PONG][panelNdx].getRow(rowNdx);
+          Pixel pixel(rand(), rand(), rand());
+          pVector->setLed(ledNdx, pixel);
+        }
+      }
+    }
   }
   
   dumpAllPanels();

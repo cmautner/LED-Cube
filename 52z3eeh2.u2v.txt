@@ -1,0 +1,15 @@
+﻿Incrementally working my way back 1
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch code-experiments
+# Your branch is ahead of 'origin/code-experiments' by 1 commit.
+#   (use "git push" to publish your local commits)
+#
+# Changes to be committed:
+#	modified:   src/LED_board/LED_board.ino
+#	modified:   src/LED_board/Panel.h
+#	modified:   src/LED_board/TimerInterrupt.cpp
+#	modified:   src/LED_board/Vector.h
+#
+
