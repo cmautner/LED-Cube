@@ -13,9 +13,6 @@ public:
   void setOrientation(Orientation orientation) {
     m_orientation = orientation;
   }
-  bool isOrientedUp() {
-    return m_orientation == UP;
-  }
 /*
   setNeighbors(Vector &above, Vector &below, Vector &left, Vector &right) : 
     m_above(above), m_below(below), m_left(left), m_right(right) { }

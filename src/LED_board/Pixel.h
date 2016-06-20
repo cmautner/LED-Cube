@@ -3,8 +3,6 @@
 
 #include <avr/io.h>
 
-#define NUM_DIM_BITS 2
-
 // In shift order, based on hardware.
 enum PixelColor { FIRST_COLOR = 0, GREEN = 0, RED, BLUE, NUM_COLORS };
 class Pixel {
@@ -13,7 +11,7 @@ public:
   void set(uint8_t _red, uint8_t _green, uint8_t _blue) {
     red = _red; green = _green; blue = _blue;
   }
-  uint8_t red : NUM_DIM_BITS, green : NUM_DIM_BITS, blue : NUM_DIM_BITS;
+  uint8_t red : 4, green : 4, blue : 4;
   Pixel & operator= (const Pixel & other) {
     if (this != &other) {
       red = other.red;

@@ -10,14 +10,11 @@ enum Orientation { UP, DOWN };
 class Vector {
   public:
     Vector() { }
-#if (NUM_DIM_BITS == 4)
     uint32_t leds[NUM_COLORS];
-#elif (NUM_DIM_BITS == 2)
-    uint16_t leds[NUM_COLORS];
-#endif
+    
     void setLed(int ledNdx, Pixel &pixel) {
-      uint8_t shiftValue = NUM_DIM_BITS * (NUM_LEDS - 1 - ledNdx);
-      uint32_t mask = ~(((uint32_t)0xf) << shiftValue);
+      uint8_t shiftValue = 4 * ledNdx;
+      uint32_t mask = ((uint32_t)0xf) << shiftValue;
 //        Serial.print("setLed ledNdx ");
 //        Serial.print(ledNdx);
 //        Serial.print(", mask ");
@@ -28,11 +25,11 @@ class Vector {
 //        Serial.print(leds[RED], HEX);
 //        Serial.print("-");
 //        Serial.print(leds[BLUE], HEX);
-      leds[RED] &= mask;
+      leds[RED] &= ~mask;
       leds[RED] |= (uint32_t)pixel.red << shiftValue;
-      leds[GREEN] &= mask;
+      leds[GREEN] &= ~mask;
       leds[GREEN] |= (uint32_t)pixel.green << shiftValue;
-      leds[BLUE] &= mask;
+      leds[BLUE] &= ~mask;
       leds[BLUE] |= (uint32_t)pixel.blue << shiftValue;
 //      Serial.print(", after ");
 //      Serial.print(leds[GREEN], HEX);
@@ -43,7 +40,7 @@ class Vector {
     }
 
     void getLed(int ledNdx, Pixel &pixel) {
-      uint8_t shiftValue = NUM_DIM_BITS * (NUM_LEDS - 1 - ledNdx);
+      uint8_t shiftValue = 4 * ledNdx;
       pixel.red = leds[RED] >> shiftValue;
       pixel.green = leds[GREEN] >> shiftValue;
       pixel.blue = leds[BLUE] >> shiftValue;
@@ -64,6 +61,10 @@ class Vector {
       Serial.print("-");
       Serial.println(leds[BLUE], HEX);
     }
+
+  private:
+    // 8 leds x 4 bits of color/led. ls-nibble = led8
+    Orientation m_orientation;
 };
 /*
 class Column : public Vector {
