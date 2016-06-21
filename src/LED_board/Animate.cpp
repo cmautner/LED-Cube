@@ -9,7 +9,7 @@ void animate() {
     return;
   }
   // Every nth time through update.
-  if (++frameCount < 10) {
+  if (++frameCount < 6) {
     return;
   }
   frameCount = 0;
@@ -44,9 +44,13 @@ void animate() {
     }
   }
 
-  nextColor.red = random() & DIM_MASK;
-  nextColor.green = random() & DIM_MASK;
-  nextColor.blue = random() & DIM_MASK;
+  if (loopFrameNdx == PING) {
+    nextColor.red = random() & DIM_MASK;
+    nextColor.green = random() & DIM_MASK;
+    nextColor.blue = random() & DIM_MASK;
+  } else {
+    nextColor = prevColor;
+  }
   for (int rowNdx = 3; rowNdx <= 4; ++rowNdx) {
     Vector *pNextRow = nextPanel->getRow(rowNdx);
     for (int ledNdx = 3; ledNdx <= 4; ++ledNdx) {
