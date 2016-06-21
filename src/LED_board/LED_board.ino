@@ -2,12 +2,14 @@
 #include "Panel.h"
 #include "Refresh.h"
 #include "LED_board.h"
+#include "Animate.h"
 
 //#define DEBUG
 
 Panel panels[NUM_BUFFERS][NUM_PANELS];
 volatile uint8_t loopFrameNdx;
-volatile uint8_t timerFrameNdx;
+volatile uint8_t animateFrameNdx;
+volatile bool switchBuffers = false;
 
 const unsigned long frameTimeMillis = 1000;
 unsigned long nextFrameTime;
@@ -112,14 +114,15 @@ void setup() {
   
   dumpAllPanels();
 
-  timerFrameNdx = PONG;
-  loopFrameNdx = 0;
+  loopFrameNdx = PONG;
+  animateFrameNdx = PING;
 
   digitalWrite(SCL, HIGH);
   digitalWrite(BLANK_, LOW);
 
-//  Timer1.initialize(1000);
-//  Timer1.attachInterrupt(timerInterrupt);
+  // 40 msec close to 24 frames/sec
+  Timer1.initialize(40000);
+  Timer1.attachInterrupt(animate);
 }
 
 unsigned long lastTime = 0;
@@ -129,114 +132,3 @@ void loop() {
   refresh();
 }
 
-#if 0
-void loop() {
-  // put your main code here, to run repeatedly:
-  if (millis() >= nextFrameTime) {
-#ifdef DEBUG
-    Serial.println(".");
-#endif
-    Pixel nextColor;
-    Pixel prevColor;
-
-    Panel *prevPanel = &panels[timerFrameNdx][PANEL_TOP];
-    Panel *nextPanel = &panels[loopFrameNdx][PANEL_TOP];
-
-    Pixel prevOuterTopColor;
-    prevPanel->getRow(0)->getLed(0, prevOuterTopColor);
-
-    // Next outer ring = previous ring just inside it.
-    for (int ringNdx = 0; ringNdx < 3; ++ringNdx) {
-      prevPanel->getRow(ringNdx + 1)->getLed(ringNdx + 1, prevColor);
-      for (int rowNdx = ringNdx; rowNdx < NUM_ROWS - ringNdx; ++rowNdx) {
-        Vector *pNextRow = nextPanel->getRow(rowNdx);
-#ifdef DEBUG
-        Serial.print((int)pNextRow, HEX);
-#endif
-        if (rowNdx == ringNdx || rowNdx == NUM_ROWS - ringNdx - 1) {
-          // Copy all the leds in this row
-          for (int ledNdx = ringNdx; ledNdx < NUM_ROWS - ringNdx; ++ledNdx) {
-            pNextRow->setLed(ledNdx, prevColor);
-#ifdef DEBUG
-            Serial.print(", ");
-            Serial.print(ledNdx);
-#endif            
-          }
-        } else {
-          // Just do first and last LED in the column equal to the row
-          pNextRow->setLed(ringNdx, prevColor);
-#ifdef DEBUG
-            Serial.print(", ");
-            Serial.print(ringNdx);
-#endif
-          pNextRow->setLed(NUM_ROWS - ringNdx - 1, prevColor);
-#ifdef DEBUG
-            Serial.print(", ");
-            Serial.print(NUM_ROWS - ringNdx - 1);
-#endif
-        }
-#ifdef DEBUG
-        prevColor.print(" ");
-        Serial.println();
-#endif
-      }
-    }
-
-    nextColor.red = random() % 2 ? 0xf : 0;
-    nextColor.green = random() % 2 ? 0xf : 0;
-    nextColor.blue = random() % 2 ? 0xf : 0;
-    for (int rowNdx = 3; rowNdx <= 4; ++rowNdx) {
-      Vector *pNextRow = nextPanel->getRow(rowNdx);
-#ifdef DEBUG
-      Serial.print((int)pNextRow, HEX);
-#endif
-      for (int ledNdx = 3; ledNdx <= 4; ++ledNdx) {
-        pNextRow->setLed(ledNdx, nextColor);
-#ifdef DEBUG
-        Serial.print(", ");
-        Serial.print(ledNdx);
-#endif            
-      }
-#ifdef DEBUG
-      nextColor.print(" ");
-      Serial.println();
-#endif
-    }
-
-#ifdef DEBUG
-    dumpPanel(PANEL_TOP);
-#endif
-    for (int panelNdx = PANEL_FIRST; panelNdx < NUM_PANELS; ++panelNdx) {
-      if (panelNdx == PANEL_TOP) {
-        // Done above, skip
-        continue;
-      }
-
-      prevPanel = &panels[timerFrameNdx][panelNdx];
-      nextPanel = &panels[loopFrameNdx][panelNdx];
-
-      for (int rowNdx = 0; rowNdx < NUM_ROWS; ++rowNdx) {
-        Vector *pNextRow = nextPanel->getRow(rowNdx);
-        if (rowNdx == 0) {
-          nextColor = prevOuterTopColor;
-        } else {
-          prevPanel->getRow(rowNdx - 1)->getLed(0, nextColor);
-        }
-        for (int ledNdx = 0; ledNdx < NUM_LEDS; ++ledNdx) {
-          pNextRow->setLed(ledNdx, nextColor);
-        }
-      }
-#ifdef DEBUG
-      dumpPanel(PANEL_TOP);
-      dumpPanel(panelNdx);
-#endif
-    }
-
-    int tmpNdx = timerFrameNdx;
-    loopFrameNdx = timerFrameNdx;
-    timerFrameNdx = tmpNdx;
-
-    nextFrameTime = millis() + frameTimeMillis;
-  }
-}
-#endif

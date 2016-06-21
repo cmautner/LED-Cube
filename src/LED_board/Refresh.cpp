@@ -48,7 +48,11 @@ const uint16_t dimmingSchedule[4] = {
   0x0, 0x8, 0xa, 0xf};
 #endif
 void refresh(void) {
-
+  if (switchBuffers) {
+    loopFrameNdx = animateFrameNdx;
+    animateFrameNdx = PONG - loopFrameNdx;
+    switchBuffers = false;
+  }
 
   if (++rowNdx >= NUM_ROWS) {
     rowNdx = 0;
@@ -60,15 +64,14 @@ void refresh(void) {
     }
   }
 
-  uint8_t frameNdx = timerFrameNdx;
+  uint8_t frameNdx = loopFrameNdx;
   // Clock out one entire row
   const int cycleBit = 1 << refreshNdx;
   
   for (int panelNdx = PANEL_FIRST; panelNdx < NUM_PANELS; ++panelNdx) {
     Panel *panel = &panels[frameNdx][panelNdx];
-    int orientedRowNdx = panel->isOrientedUp() ? rowNdx : NUM_ROWS - 1 - rowNdx;
     // Clock out the row starting at the far end
-    Vector *pRow = panel->getShiftRow(orientedRowNdx);
+    Vector *pRow = panel->getShiftRow(rowNdx);
 
     for (int color = FIRST_COLOR; color < NUM_COLORS; ++color) {
 //      Serial.print("color=");

@@ -25,6 +25,7 @@ enum PanelId {
 
 extern Panel panels[NUM_BUFFERS][NUM_PANELS];
 extern volatile uint8_t loopFrameNdx;
-extern volatile uint8_t timerFrameNdx;
+extern volatile uint8_t animateFrameNdx;
+extern volatile bool switchBuffers;
 
 #endif //LED_BOARD_H
