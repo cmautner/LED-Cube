@@ -2,6 +2,21 @@
 #include "LED_board.h"
 
 uint8_t frameCount;
+const int updateFrequency = 6;
+
+int randomNearColor(int oldColor) {
+  switch (oldColor) {
+    case 0:
+      // limit to (0, 1)
+      return oldColor + random(0, 2);
+    case DIM_MASK:
+      // limit to (DIM_MASK-1, DIM_MASK)
+      return oldColor + random(-1, 1);
+    default:
+      // limit to (oldColor-1, oldColor+1)
+      return oldColor + random(-1, 2);
+  }
+}
 
 void animate() {
   if (switchBuffers) {
@@ -9,11 +24,10 @@ void animate() {
     return;
   }
   // Every nth time through update.
-  if (++frameCount < 6) {
+  if ((++frameCount % updateFrequency) != 0) {
     return;
   }
-  frameCount = 0;
-  
+
 //  long thisMicros = micros();
 //  Serial.println(thisMicros - lastMicros);
 //  lastMicros = thisMicros;
@@ -44,13 +58,33 @@ void animate() {
     }
   }
 
-  if (loopFrameNdx == PING) {
-    nextColor.red = random() & DIM_MASK;
-    nextColor.green = random() & DIM_MASK;
-    nextColor.blue = random() & DIM_MASK;
+  if (digitalRead(SWITCH) == HIGH) {
+    if (frameCount % (2 * updateFrequency) == 0) {
+        nextColor.red = random() & DIM_MASK;
+        nextColor.green = random() & DIM_MASK;
+        nextColor.blue = random() & DIM_MASK;
+      } else {
+        nextColor = prevColor;
+      }
   } else {
-    nextColor = prevColor;
+    if ((frameCount % (4 * updateFrequency)) == 0) {
+      nextColor = prevColor;
+      switch (random() % 3) {
+        case 0:
+          nextColor.red = randomNearColor(nextColor.red);
+          break;
+        case 1:
+          nextColor.green = randomNearColor(nextColor.green);
+          break;
+        case 2:
+          nextColor.blue = randomNearColor(nextColor.blue);
+          break;
+        }
+    } else {
+      nextColor = prevColor;
+    }
   }
+
   for (int rowNdx = 3; rowNdx <= 4; ++rowNdx) {
     Vector *pNextRow = nextPanel->getRow(rowNdx);
     for (int ledNdx = 3; ledNdx <= 4; ++ledNdx) {

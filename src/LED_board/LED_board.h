@@ -5,6 +5,7 @@
 
 extern const int BLANK_;  // Enable for LEDs, active low
 extern const int LATCH;
+extern const int SWITCH;  // High or low for user input
 
 enum PingPongBuffers {
   PING = 0,

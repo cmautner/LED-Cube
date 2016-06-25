@@ -48,11 +48,6 @@ const uint16_t dimmingSchedule[4] = {
   0x0, 0x8, 0xa, 0xf};
 #endif
 void refresh(void) {
-  if (switchBuffers) {
-    loopFrameNdx = animateFrameNdx;
-    animateFrameNdx = PONG - loopFrameNdx;
-    switchBuffers = false;
-  }
 
   if (++rowNdx >= NUM_ROWS) {
     rowNdx = 0;
@@ -61,6 +56,13 @@ void refresh(void) {
       Serial.print("!");
 #endif
       refreshNdx = 0;
+    }
+
+    if (switchBuffers) {
+      int oldLoopFrameNdx = loopFrameNdx;
+      loopFrameNdx = animateFrameNdx;
+      animateFrameNdx = oldLoopFrameNdx;
+      switchBuffers = false;
     }
   }
 

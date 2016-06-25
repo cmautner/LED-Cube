@@ -16,6 +16,7 @@ unsigned long nextFrameTime;
 
 const uint8_t DDRC_INIT = 0x37; // PC0-2, 4-5 as outputs. All others as inputs
 const uint8_t DDRB_INIT = 0x23; // PB0-1,5 as outputs. All others as inputs
+const int SWITCH = 7;   // User input
 const int BLANK_ = 8;  // Enable for LEDs, active low
 const int LATCH = 9;
 
@@ -63,8 +64,11 @@ void setup() {
   Serial.begin(115200);
 
   // Set the pin directions for ports C (SCL, SDA, row select) and B (BLANK_, LAT)
+  pinMode(SWITCH, INPUT_PULLUP); // Set IO7 as input
   DDRC = DDRC_INIT;
   DDRB = DDRB_INIT;
+
+  randomSeed(analogRead(0));
 
   Pixel pixel;
   for (int frameNdx = 0; frameNdx < NUM_BUFFERS; ++frameNdx) {
