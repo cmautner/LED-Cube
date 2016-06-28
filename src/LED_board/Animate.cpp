@@ -1,5 +1,5 @@
 #include "Animate.h"
-#include "LED_board.h"
+#include "DiscodelicLib.h"
 
 uint8_t frameCount;
 const int updateFrequency = 6;
@@ -19,10 +19,6 @@ int randomNearColor(int oldColor) {
 }
 
 void animate() {
-  if (switchBuffers) {
-    Serial.println("Missed realtime constraint");
-    return;
-  }
   // Every nth time through update.
   if ((++frameCount % updateFrequency) != 0) {
     return;
@@ -34,8 +30,8 @@ void animate() {
   Pixel nextColor;
   Pixel prevColor;
 
-  Panel *prevPanel = &panels[loopFrameNdx][PANEL_TOP];
-  Panel *nextPanel = &panels[animateFrameNdx][PANEL_TOP];
+  Panel *prevPanel = Discodelic1.getPanel(FRAME_CURRENT, PANEL_TOP);
+  Panel *nextPanel = Discodelic1.getPanel(FRAME_NEXT, PANEL_TOP);
 
   Pixel prevOuterTopColor;
   prevPanel->getRow(0)->getLed(0, prevOuterTopColor);
@@ -92,14 +88,14 @@ void animate() {
     }
   }
 
-  for (int panelNdx = PANEL_FIRST; panelNdx < NUM_PANELS; ++panelNdx) {
+  for (PanelId panelNdx = PANEL_FIRST; panelNdx < NUM_PANELS; ++panelNdx) {
     if (panelNdx == PANEL_TOP) {
       // Done above, skip
       continue;
     }
 
-    prevPanel = &panels[loopFrameNdx][panelNdx];
-    nextPanel = &panels[animateFrameNdx][panelNdx];
+    prevPanel = Discodelic1.getPanel(FRAME_CURRENT, panelNdx);
+    nextPanel = Discodelic1.getPanel(FRAME_NEXT, panelNdx);
 
     for (int rowNdx = 0; rowNdx < NUM_ROWS; ++rowNdx) {
       Vector *pNextRow = nextPanel->getRow(rowNdx);
@@ -114,6 +110,6 @@ void animate() {
     }
   }
 
-  switchBuffers = true;
+  Discodelic1.swapBuffers();
 }
 
