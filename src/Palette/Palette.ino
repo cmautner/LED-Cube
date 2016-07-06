@@ -3,7 +3,7 @@
 #include "Panel.h"
 
 uint8_t frameCount;
-const int updateFrequency = 60;
+const int updateFrequency = 100;
 
 void animate(void);
 
@@ -171,7 +171,7 @@ void animate() {
   threeColorPattern(static_cast<PanelId>((startingPanel + panelNdx++) % NUM_PANELS), false, first, second);
   threeColorPattern(static_cast<PanelId>((startingPanel + panelNdx++) % NUM_PANELS), true, first, second);
 
-  Discodelic1.dumpAllPanels();
+//  Discodelic1.dumpAllPanels();
 
   ++startingPanel;
   PixelColor temp = first;
