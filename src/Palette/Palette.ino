@@ -2,8 +2,8 @@
 #include <DiscodelicLib.h>
 #include "Panel.h"
 
-uint8_t frameCount;
-const int updateFrequency = 100;
+  // Change every ten seconds
+const int updateFrequency = 10 * 1000 * 1000;
 
 void animate(void);
 
@@ -13,8 +13,7 @@ void setup() {
   Discodelic1.setup();
   Discodelic1.dumpAllPanels();
 
-  // 40 msec close to 24 frames/sec
-  Timer1.initialize(40000);
+  Timer1.initialize(updateFrequency);
   Timer1.attachInterrupt(animate);
 }
 
@@ -148,36 +147,26 @@ void twoColorPattern(PanelId panelNdx, PixelColor color1, PixelColor color2) {
 
 bool doOnce = true;
 int startingPanel = PANEL_FIRST;
-PixelColor first = RED;
-PixelColor second = GREEN;
-PixelColor third = BLUE;
 
 void animate() {
-  // Every nth time through update.
-  if (digitalRead(SWITCH) == HIGH) {
-    if ((++frameCount % updateFrequency) != 0) {
-      return;
-    }
-  } else if (doOnce) {
-    doOnce = false;
-  } else {
+  if ((digitalRead(SWITCH) == LOW) && !doOnce) {
     return;
   }
+  doOnce = false;
 
-  int panelNdx = 0;
-  twoColorPattern(static_cast<PanelId>((startingPanel + panelNdx++) % NUM_PANELS), first, second);
-  twoColorPattern(static_cast<PanelId>((startingPanel + panelNdx++) % NUM_PANELS), second, third);
-  twoColorPattern(static_cast<PanelId>((startingPanel + panelNdx++) % NUM_PANELS), third, first);
-  threeColorPattern(static_cast<PanelId>((startingPanel + panelNdx++) % NUM_PANELS), false, first, second);
-  threeColorPattern(static_cast<PanelId>((startingPanel + panelNdx++) % NUM_PANELS), true, first, second);
+  int panelNdx = random(NUM_PANELS);
+  PixelColor first = static_cast<PixelColor>(random(FIRST_COLOR, NUM_COLORS));
+  PixelColor second = static_cast<PixelColor>((first + random(1, NUM_COLORS)) % NUM_COLORS);
+  PixelColor third = static_cast<PixelColor>(NUM_COLORS - first - second);
+  twoColorPattern(static_cast<PanelId>(panelNdx % NUM_PANELS), first, second);
+  twoColorPattern(static_cast<PanelId>(++panelNdx % NUM_PANELS), second, third);
+  twoColorPattern(static_cast<PanelId>(++panelNdx % NUM_PANELS), third, first);
+  threeColorPattern(static_cast<PanelId>(++panelNdx % NUM_PANELS), false, first, second);
+  threeColorPattern(static_cast<PanelId>(++panelNdx % NUM_PANELS), true, first, second);
 
 //  Discodelic1.dumpAllPanels();
 
   ++startingPanel;
-  PixelColor temp = first;
-  first = second;
-  second = third;
-  third = temp;
 
   Discodelic1.swapBuffers();
 }
