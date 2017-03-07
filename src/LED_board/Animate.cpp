@@ -2,7 +2,7 @@
 #include "DiscodelicLib.h"
 
 uint8_t frameCount;
-const int updateFrequency = 6;
+const int updateFrequency = 10;
 
 int randomNearColor(int oldColor) {
   switch (oldColor) {

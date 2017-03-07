@@ -2,14 +2,18 @@
 #include <DiscodelicLib.h>
 
   // Change every second
-const long updateFrequency = 1000 * 1000l;
+const long updateFrequency = 150 * 1000l;
 bool doOnceInAnimate = true;
 int loopIterator = 0;
 
-#define Foreground (RGB2color(MAX_BRIGHT, 0, 0))
-#define Background (RGB2color(0, MAX_BRIGHT, MAX_BRIGHT/2))
+#define Foreground (RGB2color(MAX_BRIGHT / 2, 0, 0))
+#define Background (RGB2color(0, MAX_BRIGHT / 2, MAX_BRIGHT / 3))
 
 void animate(void);
+
+int characterPosition = 0;
+const char *helloWorld = "Hello World!";
+int16_t helloWorldWidth;
 
 void setup() {
   Serial.begin(115200);
@@ -17,26 +21,32 @@ void setup() {
   Discodelic1.setup();
 //  Discodelic1.dumpAllPanels();
 
-  DiscodelicGfx discodelicGfx = Discodelic1.mDiscodelicGfx;
-  Pixel pixel(0, 0, 3);
+  Pixel pixel(0, 0, MAX_BRIGHT);
 
   for (PanelId panelId = PANEL_FIRST; panelId < NUM_PANELS; ++panelId) {
-    discodelicGfx.setGfxPanel(panelId);
-    discodelicGfx.fillScreen(Background);
-    Discodelic1.getPanel(FRAME_NEXT, panelId)->getRow(0)->setLed(0, 0xffff);
-    Discodelic1.getPanel(FRAME_NEXT, panelId)->getRow(7)->setLed(7, pixel);
+    DiscodelicGfx1.setGfxPanel(panelId);
+    DiscodelicGfx1.fillScreen(Background);
+//    Discodelic1.getPanel(FRAME_NEXT, panelId)->getRow(0)->setLed(0, 0xffff);
+//    Discodelic1.getPanel(FRAME_NEXT, panelId)->getRow(7)->setLed(7, pixel);
   }
   Discodelic1.swapBuffers(true);
   for (PanelId panelId = PANEL_FIRST; panelId < NUM_PANELS; ++panelId) {
-    discodelicGfx.setGfxPanel(panelId);
-    discodelicGfx.fillScreen(Background);
-    Discodelic1.getPanel(FRAME_NEXT, panelId)->getRow(0)->setLed(0, 0xffff);
-    Discodelic1.getPanel(FRAME_NEXT, panelId)->getRow(7)->setLed(7, pixel);
+    DiscodelicGfx1.setGfxPanel(panelId);
+    DiscodelicGfx1.fillScreen(Background);
+//    Discodelic1.getPanel(FRAME_NEXT, panelId)->getRow(0)->setLed(0, 0xffff);
+//    Discodelic1.getPanel(FRAME_NEXT, panelId)->getRow(7)->setLed(7, pixel);
   }
-  Discodelic1.dumpAllPanels();
-    Serial.println(Discodelic1.getPanel(FRAME_CURRENT, PANEL_FRONT)->isOrientedUp());
-    Serial.println(Discodelic1.getPanel(FRAME_CURRENT, PANEL_FRONT)->getRow(0)->isOrientedUp());
-  
+  DiscodelicGfx1.setTextColor(Foreground, Background);
+  DiscodelicGfx1.setTextSize(1);
+  DiscodelicGfx1.setTextWrap(false);
+
+  int16_t x, y;
+  uint16_t w, h;
+  DiscodelicGfx1.getTextBounds((char *)helloWorld, 0, 0, &x, &y, &w, &h);
+  helloWorldWidth = strlen(helloWorld) * 6;
+  Serial.print("helloWorldWidth=");
+  Serial.println(helloWorldWidth);
+
   Timer1.initialize(updateFrequency);
   Timer1.attachInterrupt(animate);
 }
@@ -45,26 +55,28 @@ void loop() {
   Discodelic1.refresh();
 }
 
-int characterPosition = 0;
-const char *helloWorld = "Hello world!";
 
 void animate() {
-  if ((digitalRead(SWITCH) == LOW) && doOnceInAnimate) {
-    Discodelic1.swapBuffers();
-    doOnceInAnimate = false;
-    return;
-  }
-
-  char letter = helloWorld[++characterPosition];
-  if (letter == 0) {
-    characterPosition = 0;
-    letter = helloWorld[characterPosition];
-  }
-
-  DiscodelicGfx discodelicGfx = Discodelic1.mDiscodelicGfx;
-  for (PanelId panelId = PANEL_FIRST; panelId < NUM_PANELS; ++panelId) {
-    discodelicGfx.setGfxPanel(panelId);
-    discodelicGfx.drawChar(0, 0, letter, Foreground, Background, 1);
+  if (digitalRead(SWITCH) == LOW) {
+    char letter = helloWorld[++characterPosition];
+    if (letter == 0) {
+      characterPosition = 0;
+      letter = helloWorld[characterPosition];
+    }
+  
+    for (PanelId panelId = PANEL_FIRST; panelId < NUM_PANELS; ++panelId) {
+      DiscodelicGfx1.setGfxPanel(panelId);
+      DiscodelicGfx1.drawChar(0, 0, letter, Foreground, Background, 1);
+    }
+  } else {
+    if (characterPosition-- <= (-1 * helloWorldWidth)) {
+      characterPosition = 0;
+    }
+    for (PanelId panelId = PANEL_FIRST; panelId < NUM_PANELS; ++panelId) {
+      DiscodelicGfx1.setGfxPanel(panelId);
+      DiscodelicGfx1.setCursor(characterPosition, 0);
+      DiscodelicGfx1.print(helloWorld);
+    }
   }
 
   Discodelic1.swapBuffers();
