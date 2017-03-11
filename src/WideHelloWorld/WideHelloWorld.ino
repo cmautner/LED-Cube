@@ -11,7 +11,7 @@ int loopIterator = 0;
 
 void animate(void);
 
-int characterPosition = 0;
+int characterPosition = WIDE_PANEL_END;
 const char *helloWorld = "Hello World!";
 int16_t helloWorldWidth;
 
@@ -56,17 +56,9 @@ void loop() {
 }
 
 
-int slowCount;
-
 void animate() {
   if (digitalRead(SWITCH) == LOW) {
-    if (slowCount < (1000000l / updateFrequency)) {
-      slowCount++;
-      return;
-    }
-    slowCount = 0;
-
-    char letter = helloWorld[characterPosition++];
+    char letter = helloWorld[++characterPosition];
     if (letter == 0) {
       characterPosition = 0;
       letter = helloWorld[characterPosition];
@@ -78,12 +70,26 @@ void animate() {
     }
   } else {
     if (characterPosition-- <= (-1 * helloWorldWidth)) {
-      characterPosition = 0;
+      characterPosition = WIDE_PANEL_END;
     }
-    for (PanelId panelId = PANEL_FIRST; panelId < NUM_PANELS; ++panelId) {
-      DiscodelicGfx1.setGfxPanel(panelId);
-      DiscodelicGfx1.setCursor(characterPosition, 0);
-      DiscodelicGfx1.print(helloWorld);
+
+
+    DiscodelicGfx1.setWidePanelMode(true);
+    DiscodelicGfx1.setCursor(characterPosition, 0);
+    DiscodelicGfx1.print(helloWorld);
+
+    DiscodelicGfx1.setWidePanelMode(false);
+    Panel *pPanel = Discodelic1.getPanel(FRAME_NEXT, PANEL_TOP);
+    Vector *pRow;
+    Pixel pixel;
+    for (int y = 0; y < NUM_LEDS; ++y) {
+      pRow = pPanel->getRow(y);
+      for (int x = 0; x < NUM_LEDS; ++x) {
+        if (x == 0 || x == MAX_LED || y == 0 || y == MAX_LED) {
+          Discodelic1.getTopPanelNeighborPixel(pixel, x, y);
+          pRow->setLed(x, pixel);
+        }
+      }
     }
   }
 
