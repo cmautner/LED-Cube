@@ -57,6 +57,11 @@ void loop() {
 
 
 void animate() {
+  // Save the state of the blanking line. Then turn off the outputs while calculating
+  // next frame. Otherwise the row stays on too long and burns the eyes.
+  int blanked = digitalRead(8);
+  digitalWrite(8, HIGH);
+
   if (digitalRead(SWITCH) == LOW) {
     char letter = helloWorld[++characterPosition];
     if (letter == 0) {
@@ -72,7 +77,6 @@ void animate() {
     if (characterPosition-- <= (-1 * helloWorldWidth)) {
       characterPosition = WIDE_PANEL_END;
     }
-
 
     DiscodelicGfx1.setWidePanelMode(true);
     DiscodelicGfx1.setCursor(characterPosition, 0);
@@ -94,5 +98,10 @@ void animate() {
   }
 
   Discodelic1.swapBuffers();
+
+  // If the row was enabled when we entered this function, enable it again.
+  if (blanked == LOW) {
+    digitalWrite(8, LOW);
+  }
 }
 
