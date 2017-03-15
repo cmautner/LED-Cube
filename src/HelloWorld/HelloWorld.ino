@@ -9,7 +9,7 @@ int loopIterator = 0;
 #define Foreground (RGB2color(MAX_BRIGHT / 2, 0, 0))
 #define Background (RGB2color(0, MAX_BRIGHT / 2, MAX_BRIGHT / 3))
 
-void animate(void);
+bool animate(void);
 
 int characterPosition = 0;
 const char *helloWorld = "Hello World!";
@@ -47,8 +47,7 @@ void setup() {
   Serial.print("helloWorldWidth=");
   Serial.println(helloWorldWidth);
 
-  Timer1.initialize(updateFrequency);
-  Timer1.attachInterrupt(animate);
+  Discodelic::registerCallback(updateFrequency, animate);
 }
 
 void loop() {
@@ -58,11 +57,12 @@ void loop() {
 
 int slowCount;
 
-void animate() {
+bool animate() {
+  
   if (digitalRead(SWITCH) == LOW) {
     if (slowCount < (1000000l / updateFrequency)) {
       slowCount++;
-      return;
+      return false;
     }
     slowCount = 0;
 
@@ -87,6 +87,6 @@ void animate() {
     }
   }
 
-  Discodelic1.swapBuffers();
+  return true;
 }
 

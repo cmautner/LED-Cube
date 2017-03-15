@@ -3,6 +3,6 @@
 
 #include "Panel.h"
 
-void animate(void);
+bool animate(void);
 
 #endif // ANIMATE_H

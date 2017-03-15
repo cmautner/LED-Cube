@@ -18,10 +18,10 @@ int randomNearColor(int oldColor) {
   }
 }
 
-void animate() {
+bool animate() {
   // Every nth time through update.
   if ((++frameCount % updateFrequency) != 0) {
-    return;
+    return false;
   }
 
 //  long thisMicros = micros();
@@ -110,6 +110,6 @@ void animate() {
     }
   }
 
-  Discodelic1.swapBuffers();
+  return true;
 }
 

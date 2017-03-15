@@ -11,8 +11,7 @@ void setup() {
   Discodelic1.dumpAllPanels();
 
   // 40 msec close to 24 frames/sec
-  Timer1.initialize(40000);
-  Timer1.attachInterrupt(animate);
+  Discodelic::registerCallback(40000, animate);
 }
 
 void loop() {

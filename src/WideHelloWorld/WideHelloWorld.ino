@@ -2,14 +2,14 @@
 #include <DiscodelicLib.h>
 
   // Change every second
-const long updateFrequency = 150 * 1000l;
+const long updatePeriod = 150 * 1000l;
 bool doOnceInAnimate = true;
 int loopIterator = 0;
 
 #define Foreground (RGB2color(MAX_BRIGHT / 2, 0, 0))
 #define Background (RGB2color(0, MAX_BRIGHT / 2, MAX_BRIGHT / 3))
 
-void animate(void);
+bool animate(void);
 
 int characterPosition = WIDE_PANEL_END;
 const char *helloWorld = "Hello World!";
@@ -47,8 +47,7 @@ void setup() {
   Serial.print("helloWorldWidth=");
   Serial.println(helloWorldWidth);
 
-  Timer1.initialize(updateFrequency);
-  Timer1.attachInterrupt(animate);
+  Discodelic::registerCallback(updatePeriod, animate);
 }
 
 void loop() {
@@ -56,12 +55,7 @@ void loop() {
 }
 
 
-void animate() {
-  // Save the state of the blanking line. Then turn off the outputs while calculating
-  // next frame. Otherwise the row stays on too long and burns the eyes.
-  int blanked = digitalRead(8);
-  digitalWrite(8, HIGH);
-
+bool animate() {
   if (digitalRead(SWITCH) == LOW) {
     char letter = helloWorld[++characterPosition];
     if (letter == 0) {
@@ -97,11 +91,6 @@ void animate() {
     }
   }
 
-  Discodelic1.swapBuffers();
-
-  // If the row was enabled when we entered this function, enable it again.
-  if (blanked == LOW) {
-    digitalWrite(8, LOW);
-  }
+  return true;
 }
 
