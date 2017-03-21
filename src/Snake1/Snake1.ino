@@ -2,14 +2,15 @@
 
 const int numPanels = 3;
 const int worldSize = NUM_ROWS * NUM_LEDS * numPanels;
-const long updatePeriod = 100 * 1000l; // 10 Hz
+const long updatePeriod = 75 * 1000l; // 10 Hz
 
-#define colorSnake (RGB2color(MAX_BRIGHT / 2, 0, 0))
+#define colorSnake (RGB2color(MAX_BRIGHT, 0, 0))
 #define colorBlack (RGB2color(0, 0, 0))
-#define colorField (RGB2color(0, MAX_BRIGHT / 2, MAX_BRIGHT / 3))
-#define colorFood (RGB2color(MAX_BRIGHT / 2, 0, MAX_BRIGHT / 2))
-#define colorHead (RGB2color(MAX_BRIGHT - 1, MAX_BRIGHT - 2, 0))
-#define colorDead (RGB2color(1, 1, 1))
+#define colorField (RGB2color(1, 1, 1))
+#define colorFood (RGB2color(0, MAX_BRIGHT - 1, 0))
+#define colorHead (RGB2color(MAX_BRIGHT, MAX_BRIGHT - 1, 0))
+#define colorTail (RGB2color(0, MAX_BRIGHT - 1, MAX_BRIGHT - 2))
+#define colorDead (RGB2color(0, 0, 2))
 
 enum {
   DIR_UP, DIR_DOWN, DIR_LEFT, DIR_RIGHT
@@ -40,11 +41,11 @@ class FieldLoc {
   FieldLoc & operator= (const FieldLoc & other);
   bool move(int direction, FieldLoc & result);
   int getPeers(FieldLoc peers[]);
+  static FieldLoc randomLoc();
 
   void draw(uint16_t color) {
     FieldLoc peers[3];
     int numPeers = getPeers(peers);
-    peers[numPeers++] = *this;
     for (int peerNdx = 0; peerNdx < numPeers; ++peerNdx) {
       FieldLoc peer = peers[peerNdx];
       Panel *pPanel = Discodelic1.getPanel(FRAME_NEXT, toPanel(peer.panel));
@@ -72,7 +73,6 @@ bool FieldLoc::operator== (const FieldLoc & other) {
 
   FieldLoc peers[3];
   int numPeers = getPeers(peers);
-  peers[numPeers++] = *this;
   for (int peerNdx = 0; peerNdx < numPeers; ++peerNdx) {
     FieldLoc peer = peers[peerNdx];
     if (peer.panel == other.panel) {
@@ -170,6 +170,7 @@ bool FieldLoc::move(int direction, FieldLoc &result) {
 
 int FieldLoc::getPeers(FieldLoc peers[]) {
   int peersNdx = 0;
+  peers[peersNdx++] = *this;
   if (panel == top) {
     if (x == MAX_LED) {
       peers[peersNdx++] = FieldLoc(right, MAX_LED - y, 0);
@@ -233,7 +234,7 @@ class Snake {
   }
 
   void draw() {
-    uint16_t color = dead ? colorDead : colorSnake;
+    uint16_t color = colorTail;
     int bodyNdx = tail;
     while (bodyNdx != head) {
       body[bodyNdx].draw(color);
@@ -241,6 +242,7 @@ class Snake {
       if (bodyNdx == worldSize) {
         bodyNdx = 0;
       }
+      color = dead ? colorDead : colorSnake;
     }
     body[head].draw(colorHead);
   }
@@ -288,16 +290,40 @@ void drawField() {
   }
 }
 
+FieldLoc FieldLoc::randomLoc() {
+  while (true) {
+    FieldLoc randLoc =
+      FieldLoc(random(top,right + 1), random(0, NUM_LEDS), random(0, NUM_ROWS));
+    if (!(skipNdx(randLoc.x) && skipNdx(randLoc.y))) {
+      return randLoc;
+    }
+  }
+}
+
 void setup() {
   Serial.begin(115200);
+
+  if (true || digitalRead(SWITCH) == HIGH) {
+    long seed = 0;
+    for (int i = 0; i < 32; ++i) {
+      seed = (seed << 3) | (analogRead(0) & 1);
+      delay(1);
+    }
+    randomSeed(seed);
+  }
 
   Discodelic1.setup();
 //  Discodelic1.dumpAllPanels();
 
-  snake.body[snake.head] = FieldLoc(top, 2, 2);
-  snake.direction = DIR_DOWN;
+  snake = Snake();
+  FieldLoc snakeHead;
+  snake.print();
+  do {
+    snakeHead = FieldLoc::randomLoc();
+    food = FieldLoc::randomLoc();
+  } while (food == snakeHead);
 
-  food = FieldLoc(front, 5, 5);
+  snake.body[snake.head] = snakeHead;
 
   blankCube();
   drawField();
@@ -316,9 +342,6 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  if (digitalRead(SWITCH) == LOW) {
-    randomSeed(micros());
-  }
   Discodelic1.refresh();
 }
 
@@ -327,6 +350,14 @@ int stepCount = 0;
 
 bool animate() {
   ++stepCount;
+  if ((digitalRead(SWITCH) == LOW) && snake.dead) {
+    delay(1);
+    if (stepCount == 60) {
+      setup();
+      stepCount = 0;
+    }
+    return false;
+  }
 
   drawField();
   if (stepCount % 3 == 0) {
@@ -335,6 +366,9 @@ bool animate() {
     food.draw(colorFood);
   }
 
+  FieldLoc foodPeers[3];
+  int numFoodPeers = food.getPeers(foodPeers);
+
   if ((stepCount == movePeriod) && !snake.dead) {
     stepCount = 0;
 
@@ -342,34 +376,75 @@ bool animate() {
     FieldLoc headLoc = snake.body[snake.head];
     FieldLoc nextLoc;
 
-    int startDirection = random(0, 4);
-    int direction = startDirection;
+    long closest = 1000000l;
+    int bestDir = -1;
     bool found = false;
-    do {
+    bool samePanelFound = false;
+    for (int direction = DIR_UP; direction <= DIR_RIGHT; ++direction) {
       if ((snake.direction == DIR_UP && direction == DIR_DOWN) ||
         (snake.direction == DIR_DOWN && direction == DIR_UP) ||
         (snake.direction == DIR_LEFT && direction == DIR_RIGHT) ||
         (snake.direction == DIR_RIGHT && direction == DIR_LEFT)) {
-        direction = (direction + 1) % 4;
         continue;
       }
-      bool dead = headLoc.move(direction, nextLoc);
-Serial.print("direction=");
-Serial.println(direction);
-Serial.print("nextLoc=");
-nextLoc.print();
-Serial.println();
-      if (!dead && !(skipNdx(nextLoc.x) && skipNdx(nextLoc.y))) {
-        snake.direction = direction;
-        found = true;
-Serial.println();
-      }
-      direction = (direction + 1) % 4;
-    } while (!found && (direction != startDirection));
 
-    snake.dead = !found;
-    
+      bool dead = headLoc.move(direction, nextLoc);
+      if (dead || (skipNdx(nextLoc.x) && skipNdx(nextLoc.y))) {
+        continue;
+      }
+
+      FieldLoc peers[3];
+      int numPeers = nextLoc.getPeers(peers);
+      for (int peersNdx = 0; peersNdx < numPeers; ++peersNdx) {
+        nextLoc = peers[peersNdx];
+        for (int foodPeersNdx = 0; foodPeersNdx < numFoodPeers; ++foodPeersNdx) {
+          food = foodPeers[foodPeersNdx];
+          if (nextLoc.panel == food.panel) {
+            samePanelFound = true;
+            long xDist = food.x - nextLoc.x;
+            long yDist = food.y - nextLoc.y;
+            long distance = (xDist * xDist) + (yDist * yDist);
+            if (distance < closest) {
+              closest = distance;
+              bestDir = direction;
+            } else if (distance == closest && random(0, 2)) {
+              bestDir = direction;
+            }
+          }
+        }
+      }
+
+      if (!samePanelFound) {
+        if (bestDir == -1) {
+          bestDir = direction;
+        }
+        switch (nextLoc.panel) {
+          case top:
+            if ((food.panel == front && direction == DIR_DOWN) ||
+              (food.panel == right && direction == DIR_RIGHT)) {
+              bestDir = direction;
+            }
+            break;
+          case front:
+            if ((food.panel == top && direction == DIR_UP) ||
+              (food.panel == right && direction == DIR_RIGHT)) {
+              bestDir = direction;
+            }
+            break;
+          case right:
+            if ((food.panel == top && direction == DIR_UP) ||
+              (food.panel == front && direction == DIR_LEFT)) {
+              bestDir = direction;
+            }
+            break;
+        }
+      }
+    } // loop through all directions
+
+    snake.dead = bestDir == -1;
+        
     if (!snake.dead) {
+      snake.direction = bestDir;
       for (int bodyNdx = snake.tail; bodyNdx != snake.head; bodyNdx = (bodyNdx + 1) % worldSize) {
         if (snake.body[bodyNdx] == nextLoc) {
           snake.dead = true;
@@ -390,9 +465,7 @@ Serial.println();
       snake.move();
 
       if (snake.body[snake.head] == food) {
-        FieldLoc startLoc = 
-          FieldLoc(random(0,3), random(0, NUM_LEDS), random(0, NUM_ROWS));
-
+        FieldLoc startLoc = FieldLoc::randomLoc();
         uint8_t x, y;
         uint8_t panel = startLoc.panel;
         found = false;
@@ -426,6 +499,8 @@ Serial.println();
         if (found) {
           food.draw(colorFood);
         } else {
+          Serial.println("Snake dead because nowhere to put food!");
+          snake.print();
           snake.dead = true;
         }
       }
