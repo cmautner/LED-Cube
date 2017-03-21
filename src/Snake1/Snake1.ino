@@ -309,7 +309,7 @@ void setup() {
       seed = (seed << 3) | (analogRead(0) & 1);
       delay(1);
     }
-    randomSeed(seed);
+    randomSeed(seed ^ micros());
   }
 
   Discodelic1.setup();
