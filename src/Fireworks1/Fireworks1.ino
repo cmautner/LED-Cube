@@ -31,7 +31,7 @@ class Firework {
       green = random(0, 4);
       blue = random(0, 4);
       centerX = random(0, WIDE_PANEL_END);
-      centerY = random(0, TALL_PANEL_END);
+      centerY = random(NUM_ROWS, TALL_PANEL_END);
       fill = random(0,2);
       next = NULL;
       prev = NULL;
@@ -80,13 +80,15 @@ class Firework {
       Serial.print(green);
       Serial.print(",");
       Serial.print(blue);
+      Serial.print(" fill=");
+      Serial.print(fill);
       Serial.print(" lf=");
       Serial.print(lifetime);
       Serial.print(" age=");
       Serial.print(age);
-      Serial.print(" prv");
+      Serial.print(" prv=");
       Serial.print((int)prev);
-      Serial.print(" nxt");
+      Serial.print(" nxt=");
       Serial.println((int)next);
     }
 };
@@ -116,17 +118,31 @@ void loop() {
   Discodelic1.refresh();
 }
 
-
+bool doOnce = true;
 bool animate() {
+  bool debug = false;
+  if (digitalRead(SWITCH) == LOW) {
+    debug = true;    
+  } else {
+    doOnce = true;
+  }
+
   DiscodelicGfx1.fillScreen(colorBackground);
  
-
   Firework *last = NULL;
   for (Firework *firework = head; firework != NULL; firework = firework->next) {
-    firework->age++;
-//    Serial.print((int)firework);
-//    Serial.print(": ");
-//    firework->print();
+    if (debug) {
+      if (doOnce) {
+        Serial.print((int)firework);
+        Serial.print(": ");
+        firework->print();
+        DiscodelicGfx1.setTraceMode(true);
+
+        srand(micros());
+      }
+    } else {
+      firework->age++;
+    } 
     firework->draw();
     if (firework->age == firework->lifetime) {
       if (firework->prev != NULL) {
@@ -142,14 +158,23 @@ bool animate() {
       last = firework;
     }
   }
-  if (last == NULL) {
-//    Serial.println("Creating head");
-    head = new Firework();
-  } else if (random(0, 5) == 1) {
-//    Serial.println("Creating non head");
-    last->next = new Firework();
-    last->next->prev = last;
+  if (debug) {
+    if (doOnce) {
+      DiscodelicGfx1.setTraceMode(false);
+      Serial.println();
+      doOnce = false;
+    }
+  } else {
+    if (last == NULL) {
+  //    Serial.println("Creating head");
+      head = new Firework();
+    } else if (random(0, 5) < 2) {
+  //    Serial.println("Creating non head");
+      last->next = new Firework();
+      last->next->prev = last;
+    }
   }
+
   return true;
 }
 
