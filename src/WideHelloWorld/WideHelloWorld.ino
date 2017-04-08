@@ -12,7 +12,7 @@ int loopIterator = 0;
 bool animate(void);
 
 int characterPosition = WIDE_PANEL_END;
-const char *helloWorld = "Hello World!";
+const char *helloWorld = "Hola Mundo!";
 int16_t helloWorldWidth;
 
 void setup() {

@@ -1,5 +1,8 @@
 #include <DiscodelicLib.h>
 
+const int LEFT_BUTTON = 6;
+const int COMMON = 5;
+const int RIGHT_BUTTON = 4;
 
 #define colorSnake (RGB2color(MAX_BRIGHT, 0, 0))
 #define colorBlack (RGB2color(0, 0, 0))
@@ -23,7 +26,7 @@ enum {
 };
 
 const int worldSize = NUM_ROWS * NUM_LEDS * numPanels;
-const long updatePeriod = 75 * 1000l; // 10 Hz
+const long updatePeriod = 50 * 1000l;
 
 PanelId toPanel(int panel) {
   switch(panel) {
@@ -225,6 +228,13 @@ class Snake {
     uint8_t head = 0, tail = 0;
     int direction;
     bool dead = false;
+    long deadTime;
+
+  void kill() {
+    dead = true;
+    deadTime = millis();
+    srand(deadTime);
+  }
 
   void move() {
     FieldLoc oldHead = body[head];
@@ -233,6 +243,12 @@ class Snake {
     // Make the move, but don't store the new location in the body.
     dead = oldHead.move(direction, newHead);
     if (dead) {
+      kill();
+      Serial.println("DEAD by move off field");
+      Serial.print("newHead=");
+      newHead.print();
+      Serial.println();
+      print();
       return;
     }
 
@@ -265,6 +281,10 @@ class Snake {
       color = dead ? colorDead : colorSnake;
     }
     body[head].draw(colorHead);
+  }
+
+  int length() {
+    return (head + worldSize - tail) % worldSize;
   }
 
   void print() {
@@ -306,10 +326,11 @@ void drawField() {
   }
 }
 
+unsigned long nextMoveTime;
+
 void reset() {
   snake = Snake();
   FieldLoc snakeHead;
-  snake.print();
   do {
     snakeHead = FieldLoc::randomLoc();
     food = FieldLoc::randomLoc();
@@ -328,42 +349,74 @@ void reset() {
   drawField();
   snake.draw();
   food.draw(colorFood);
+
+  nextMoveTime = millis() + 1000;
 }
 
 void setup() {
   Serial.begin(115200);
 
+  Discodelic1.setup();
+
   if (true || digitalRead(SWITCH) == HIGH) {
     long seed = 0;
     for (int i = 0; i < 10; ++i) {
-      seed = (seed << 3) | (analogRead(0) & 7);
+      
+      seed = (seed << 3) | (analogRead(A0) & 7);
       delay(1);
     }
     randomSeed(seed ^ micros());
   }
 
-  Discodelic1.setup();
+  pinMode(LEFT_BUTTON, INPUT_PULLUP);
+  pinMode(RIGHT_BUTTON, INPUT_PULLUP);
+  pinMode(COMMON, OUTPUT);
+  digitalWrite(COMMON, LOW);
 
   reset();
 
   Discodelic::registerCallback(updatePeriod, animate);
 }
 
+unsigned long lastButtonTime;
+int lastButtonPress;
+int buttonDirection;
+
+const char *directionStrings[] = {
+  "DIR_UP", "DIR_DOWN", "DIR_LEFT", "DIR_RIGHT"
+};
+
 void loop() {
-  // put your main code here, to run repeatedly:
+  noInterrupts();
+  int left = digitalRead(LEFT_BUTTON) == HIGH;
+  int right = digitalRead(RIGHT_BUTTON) == HIGH;
+  int buttonPress =
+    (left && right) ? DIR_UP :
+    left ? DIR_LEFT :
+    right ? DIR_RIGHT : buttonDirection;
+  unsigned long now = millis();
+  if (lastButtonPress == buttonPress) {
+    if (now - lastButtonTime > 100 && buttonDirection != buttonPress) {
+      buttonDirection = buttonPress;
+      Serial.print("new buttonDirection=");
+      Serial.println(directionStrings[buttonDirection]);
+    }
+  } else {
+    lastButtonPress = buttonPress;
+    lastButtonTime = now;
+    Serial.print("new buttonPress=");
+    Serial.println(directionStrings[lastButtonPress]);
+  }
+  interrupts();
+  
   Discodelic1.refresh();
 }
 
-const int movePeriod = 4; // 1 second
-int stepCount = 0;
 
 bool animate() {
-  ++stepCount;
   if (snake.dead) {
-    delay(1);
-    if (stepCount == 60) {
+    if (millis() - snake.deadTime > 5000) {
       reset();
-      stepCount = 0;
     }
     return false;
   }
@@ -371,107 +424,43 @@ bool animate() {
   drawField();
 
   // blink the food.
-  if (stepCount % 3 == 0) {
+  if ((millis() / 250) % 2 == 0) {
     food.draw(colorField);
   } else {
     food.draw(colorFood);
   }
 
-  FieldLoc foodPeers[3];
-  int numFoodPeers = food.getPeers(foodPeers);
+  if (millis() > nextMoveTime) {
 
-  if ((stepCount == movePeriod) && !snake.dead) {
-    stepCount = 0;
+    // indexed by snake.direction, buttonDirection
+    int newDirectionTable[4][4] = {
+    // button:
+    //  DIR_UP,    **, DIR_LEFT,  DIR_RIGHT
+      { DIR_UP,    -1, DIR_LEFT,  DIR_RIGHT }, // snake.direction DIR_UP
+      { DIR_DOWN,  -1, DIR_RIGHT, DIR_LEFT },  // snake.direction DIR_DOWN
+      { DIR_LEFT,  -1, DIR_DOWN,  DIR_UP },    // snake.direction DIR_LEFT
+      { DIR_RIGHT, -1, DIR_UP,    DIR_DOWN }   // snake.direction DIR_RIGHT
+    };
+    int direction = newDirectionTable[snake.direction][buttonDirection];
 
-    // REMOVE when buttons
-    FieldLoc headLoc = snake.body[snake.head];
     FieldLoc nextLoc;
+    bool dead = snake.body[snake.head].move(direction, nextLoc);
 
-    // Run through all of the directions and pick the best one.
-    long closest = 1000000l;
-    int bestDirection = -1;
-    bool found = false;
-    bool samePanelFound = false;
-    for (int direction = DIR_UP; direction <= DIR_RIGHT; ++direction) {
-      // Don't reverse course
-      if ((snake.direction == DIR_UP && direction == DIR_DOWN) ||
-        (snake.direction == DIR_DOWN && direction == DIR_UP) ||
-        (snake.direction == DIR_LEFT && direction == DIR_RIGHT) ||
-        (snake.direction == DIR_RIGHT && direction == DIR_LEFT)) {
-        continue;
-      }
-
-      // Test the move
-      if (headLoc.move(direction, nextLoc)) {
-        // Dead move, try again.
-        continue;
-      }
-
-      // Valid move, compare all its peers to the food.
-      FieldLoc peers[3];
-      int numPeers = nextLoc.getPeers(peers);
-      for (int peersNdx = 0; peersNdx < numPeers; ++peersNdx) {
-        nextLoc = peers[peersNdx];
-        for (int foodPeersNdx = 0; foodPeersNdx < numFoodPeers; ++foodPeersNdx) {
-          food = foodPeers[foodPeersNdx];
-          if (nextLoc.panel == food.panel) {
-            // Some peers are actually on the same panel. This is a good move.
-            samePanelFound = true;
-            long xDist = food.x - nextLoc.x;
-            long yDist = food.y - nextLoc.y;
-            long distance = (xDist * xDist) + (yDist * yDist);
-            if (distance < closest) {
-              closest = distance;
-              bestDirection = direction;
-            } else if (distance == closest && random(0, 2)) {
-              // Equally as good as another, pick either at random.
-              bestDirection = direction;
-            }
-          }
-        }
-      }
-
-      if (!samePanelFound) {
-        // All moves so far have resulted in a different panel than the food.
-        if (bestDirection == -1) {
-          // Nothing better so far, default to this direction. Hopefully we get
-          // a smart move later to replace it.
-          bestDirection = direction;
-        }
-        // If this is a legal move in the right direction to the food panel, use it.
-        switch (nextLoc.panel) {
-          case top:
-            if ((food.panel == front && direction == DIR_DOWN) ||
-              (food.panel == right && direction == DIR_RIGHT)) {
-              bestDirection = direction;
-            }
-            break;
-          case front:
-            if ((food.panel == top && direction == DIR_UP) ||
-              (food.panel == right && direction == DIR_RIGHT)) {
-              bestDirection = direction;
-            }
-            break;
-          case right:
-            if ((food.panel == top && direction == DIR_UP) ||
-              (food.panel == front && direction == DIR_LEFT)) {
-              bestDirection = direction;
-            }
-            break;
-        }
-      }
-    } // end loop through all directions
-
-    if (bestDirection == -1) {
-      snake.dead = true;
-      Serial.println("DEAD by no direction found");
-      snake.print();
+    if (dead) {
+      Serial.print("Snake would be dead because can't move from ");
+      snake.body[snake.head].print();
+      Serial.print(" in direction ");
+      Serial.println(directionStrings[direction]);
     } else {
-      snake.direction = bestDirection;
+      snake.direction = direction;
+      buttonDirection = DIR_UP;
+    }
+
+    if (!snake.dead) {
       // Look for body collision.
       for (int bodyNdx = snake.tail; bodyNdx != snake.head; bodyNdx = (bodyNdx + 1) % worldSize) {
         if (snake.body[bodyNdx] == nextLoc) {
-          snake.dead = true;
+          snake.kill();
           Serial.println("DEAD by self bite");
           Serial.print("nextLoc=");
           nextLoc.print();
@@ -493,7 +482,7 @@ bool animate() {
         FieldLoc startLoc = FieldLoc::randomLoc();
         uint8_t x, y;
         uint8_t panel = startLoc.panel;
-        found = false;
+        bool found = false;
         do {
           x = startLoc.x;
           do {
@@ -527,10 +516,14 @@ bool animate() {
         } else {
           Serial.println("Snake dead because nowhere to put food!");
           snake.print();
-          snake.dead = true;
+          snake.kill();
         }
       }
     }
+
+    // Minimum 200 at length 60
+    float length = snake.length(); 
+    nextMoveTime = millis() + (length > 20 ? 200 : 600 - (400 * (length / 20)));
   }
 
   snake.draw();
